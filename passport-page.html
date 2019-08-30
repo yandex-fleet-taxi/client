@@ -1,0 +1,300 @@
+<!doctype html>
+<html class="is-js_no" data-page-type="react.authv2" lang="ru">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="IE=EmulateIE7,IE=edge" http-equiv="X-UA-Compatible"/>
+    <link href="//yastatic.net/morda-logo/i/favicon_islands.ico" rel="shortcut icon"/>
+    <title>Авторизация</title><!--[if gt IE 8]><!-->
+    <link href="https://yastatic.net/passport-frontend/0.2.126-9/public/css/react.authv2.css" rel="stylesheet"
+          type="text/css"/><!-- <![endif]-->
+    <!--[if lt IE 9]>
+    <link rel="stylesheet" type="text/css"
+          href="https://yastatic.net/passport-frontend/0.2.126-9/public/css/react.authv2.ie.css"/><![endif]-->
+    <script nonce="5301a7b7-f327-4cbd-935e-53510fe9f193">(function (d, e, c, r, n, w, v, f) {
+        e = d.documentElement;
+        c = "className";
+        r = "replace";
+        n = "createElementNS";
+        f = "firstChild";
+        w = "http://www.w3.org/2000/svg";
+        v = d.createElement("div");
+        v.innerHTML = "<svg/>";
+        e[c] = e[c][r]("is-js_no", "is-js_yes");
+        e[c] += " is-inlinesvg_" + ((v[f] && v[f].namespaceURI) === w ? "yes" : "no");
+    })(document);
+    window.onerror = function (d, e, f, g, b) {
+        var h = new Image, a = ["app=passport"], c = "";
+        d && a.push("msg=" + encodeURIComponent(d));
+        e && a.push("url=" + encodeURIComponent(e));
+        (f || g) && a.push("position=" + encodeURIComponent(f + ":" + g));
+        if (b) {
+            try {
+                c = JSON.stringify(b, Object.getOwnPropertyNames(b))
+            } catch (k) {
+                c = b.stack
+            }
+            a.push("error_object=" + encodeURIComponent(c))
+        }
+        h.src = "/monitoring/onerror?" + a.join("&");
+        return !1
+    };</script>
+    <script nonce="5301a7b7-f327-4cbd-935e-53510fe9f193" type="text/javascript">!function (i, t) {
+        function e() {
+            Ya.Rum.vsChanged = !0, document.removeEventListener("visibilitychange", e)
+        }
+
+        if (i.Ya = i.Ya || {}, Ya.Rum) throw new Error("Rum: interface is already defined");
+        var n = i.performance, s = n && n.timing && n.timing.navigationStart || Ya.startPageLoad || +new Date,
+            a = i.requestAnimationFrame;
+        Ya.Rum = {
+            enabled: !!n,
+            vsStart: document.visibilityState,
+            vsChanged: !1,
+            _defTimes: [],
+            _defRes: [],
+            _deltaMarks: {},
+            _settings: {},
+            _vars: {},
+            init: function (i, t) {
+                this._settings = i, this._vars = t
+            },
+            getTime: n && n.now ? function () {
+                return n.now()
+            } : function () {
+                return Date.now() - s
+            },
+            time: function (i) {
+                this._deltaMarks[i] = [this.getTime()]
+            },
+            timeEnd: function (i) {
+                var t = this._deltaMarks[i];
+                t && 0 !== t.length && t.push(this.getTime())
+            },
+            sendTimeMark: function (i, t, e, n) {
+                void 0 === t && (t = this.getTime()), this._defTimes.push([i, t, n]), this.mark(i, t)
+            },
+            sendResTiming: function (i, t) {
+                this._defRes.push([i, t])
+            },
+            sendRaf: function (i) {
+                if (a && !this.isVisibilityChanged()) {
+                    var t = this, e = "2616." + i;
+                    a(function () {
+                        t.isVisibilityChanged() || (t.sendTimeMark(e + ".205"), a(function () {
+                            t.isVisibilityChanged() || t.sendTimeMark(e + ".1928")
+                        }))
+                    })
+                }
+            },
+            isVisibilityChanged: function () {
+                return this.vsStart && ("visible" !== this.vsStart || this.vsChanged)
+            },
+            mark: n && n.mark ? function (i, t) {
+                n.mark(i + (t ? ": " + t : ""))
+            } : function () {
+            }
+        }, Date.now || (Ya.Rum.getTime = function () {
+            return new Date - s
+        }), document.addEventListener && document.addEventListener("visibilitychange", e)
+    }(window);
+    !function () {
+        "use strict";
+        if (window.PerformanceLongTaskTiming) {
+            var e = Ya.Rum._tti = {
+                events: [], observer: new PerformanceObserver(function (n) {
+                    e.events = e.events.concat(n.getEntries()), e.events.length > 100 && e.events.shift()
+                })
+            };
+            e.observer.observe({entryTypes: ["longtask"]})
+        }
+    }();
+    Ya.Rum.init({
+        beacon: true,
+        clck: 'https://yandex.ru/clck/click',
+        slots: ["109335,0,15", "118434,0,45", "142176,0,10", "147814,0,31", "146770,0,46", "152513,0,36"],
+        reqid: 'c806013a2e6be5c622d8b0068ee6335d'
+    }, {'287': '157', '143': '28.1207.2243'});</script>
+    <script nonce="5301a7b7-f327-4cbd-935e-53510fe9f193">var uid = null;
+    var login = null;
+    var passportHost = "passport.yandex.ru";</script>
+    <!--[if IE]>
+    <script src="//yastatic.net/jquery/2.1.4/jquery.min.js"></script>
+    <script crossorigin="anonymous"
+            src="https://yastatic.net/passport-frontend/0.2.126-9/public/js/react.authv2.vendor.js"></script>
+    <script crossorigin="anonymous"
+            src="https://yastatic.net/passport-frontend/0.2.126-9/public/js/react.authv2.lego.ru.js"></script>
+    <script crossorigin="anonymous"
+            src="https://yastatic.net/passport-frontend/0.2.126-9/public/js/react.authv2.react.ru.js"></script>
+    <![endif]--><!--[if !IE]><!-->
+    <script src="//yastatic.net/jquery/2.1.4/jquery.min.js"></script>
+    <script crossorigin="anonymous"
+            defer="defer"
+            src="https://yastatic.net/passport-frontend/0.2.126-9/public/js/react.authv2.vendor.js"></script>
+    <script crossorigin="anonymous"
+            defer="defer"
+            src="https://yastatic.net/passport-frontend/0.2.126-9/public/js/react.authv2.lego.ru.js"></script>
+    <script crossorigin="anonymous"
+            defer="defer"
+            src="https://yastatic.net/passport-frontend/0.2.126-9/public/js/react.authv2.react.ru.js"></script><!-- <![endif]--></head>
+<body data-auth-customs-url="https://yastatic.net/s3/passport-auth-customs//0.0.24"
+      data-csrf="e6876f0d5785617ce103893fb2a4dadd30a77189:1567171385804"
+      data-extended-logging="true" data-locale="ru" data-locals="{&quot;common&quot;:{&quot;backpath&quot;:&quot;https://fleet.taxi.yandex.ru&quot;,&quot;bgNumber&quot;:&quot;9&quot;,&quot;csrf&quot;:&quot;eb8fd51433180ff188fee8fe5a9c9596712e2e7c:1567171385750&quot;,&quot;currentUrl&quot;:&quot;https://passport.yandex.ru/auth/welcome?retpath=https%3A%2F%2Ffleet.taxi.yandex.ru&quot;,&quot;experiments&quot;:{&quot;flags&quot;:[&quot;PASSP-21572-dozapros-exp&quot;,&quot;PLUS-215-exp&quot;,&quot;PASSP-23723-reg-timer-exp60&quot;,&quot;sber_auth_exp&quot;,&quot;restore_etalon_noglogaut&quot;,&quot;domik-new_reg-exp3&quot;],&quot;flagsString&quot;:&quot;PASSP-21572-dozapros-exp,PLUS-215-exp,PASSP-23723-reg-timer-exp60,sber_auth_exp,restore_etalon_noglogaut,domik-new_reg-exp3&quot;,&quot;boxes&quot;:[&quot;109335,0,15&quot;,&quot;118434,0,45&quot;,&quot;142176,0,10&quot;,&quot;147814,0,31&quot;,&quot;146770,0,46&quot;,&quot;152513,0,36&quot;],&quot;encodedBoxes&quot;:&quot;Nm36Jz3AtTlE-dwWgPg9AdNE75JC7IgAabOgjqifPhf6e_xe0yyKzcCiyd75YRy63XfSS9zY3tbAJI_d-EmaDpzn4EhydiKk&quot;},&quot;retpath&quot;:&quot;https://fleet.taxi.yandex.ru&quot;,&quot;track_id&quot;:null,&quot;magic_csrf_token&quot;:null,&quot;noreturn&quot;:false,&quot;yu&quot;:&quot;68583321567171385&quot;,&quot;captchaScaleFactor&quot;:3,&quot;backPane&quot;:null,&quot;loginStatusRetpath&quot;:&quot;https://passport.yandex.ru/auth/login-status_v2.html&quot;,&quot;embeddedauth_url&quot;:&quot;//passport.yandex.ru/passport?mode=embeddedauth&quot;,&quot;embeddedAuthUrlObjs&quot;:{&quot;protocol&quot;:null,&quot;slashes&quot;:null,&quot;auth&quot;:null,&quot;host&quot;:null,&quot;port&quot;:null,&quot;hostname&quot;:null,&quot;hash&quot;:null,&quot;search&quot;:&quot;?mode=embeddedauth&quot;,&quot;query&quot;:{&quot;mode&quot;:&quot;embeddedauth&quot;},&quot;pathname&quot;:&quot;//passport.yandex.ru/passport&quot;,&quot;path&quot;:&quot;//passport.yandex.ru/passport?mode=embeddedauth&quot;,&quot;href&quot;:&quot;//passport.yandex.ru/passport?mode=embeddedauth&quot;},&quot;addUserUrl&quot;:&quot;/auth/add?retpath=https%3A%2F%2Ffleet.taxi.yandex.ru&quot;,&quot;welcomeUrl&quot;:&quot;/auth/welcome?retpath=https%3A%2F%2Ffleet.taxi.yandex.ru&quot;,&quot;askPhoneUrl&quot;:&quot;/auth/phone?retpath=https%3A%2F%2Ffleet.taxi.yandex.ru&quot;,&quot;phoneConfirmationUrl&quot;:&quot;/auth/phone/confirm?retpath=https%3A%2F%2Ffleet.taxi.yandex.ru&quot;,&quot;askSocialUrl&quot;:&quot;/auth/social?retpath=https%3A%2F%2Ffleet.taxi.yandex.ru&quot;,&quot;askEmailUrl&quot;:&quot;/auth/email?retpath=https%3A%2F%2Ffleet.taxi.yandex.ru&quot;,&quot;editUrl&quot;:&quot;/auth/list?retpath=https%3A%2F%2Ffleet.taxi.yandex.ru&amp;mode=edit&quot;,&quot;addUserWithLoginUrl&quot;:&quot;https://passport.yandex.ru/auth/add?retpath=https%3A%2F%2Ffleet.taxi.yandex.ru&amp;login=login&amp;process_uuid=84693b2f-cc3d-4e4e-8013-1bc7918515ba&quot;,&quot;restoreLoginUrl&quot;:&quot;/auth/restore/login?retpath=https%3A%2F%2Ffleet.taxi.yandex.ru&quot;,&quot;restoreLoginProcessUrl&quot;:&quot;/auth/restore/login/process?retpath=https%3A%2F%2Ffleet.taxi.yandex.ru&quot;,&quot;restoreLoginResultUrl&quot;:&quot;/auth/restore/login/result?retpath=https%3A%2F%2Ffleet.taxi.yandex.ru&quot;,&quot;magicUrl&quot;:&quot;/auth/magic?retpath=https%3A%2F%2Ffleet.taxi.yandex.ru&quot;,&quot;authUrl&quot;:&quot;https://passport.yandex.ru/auth?retpath=https%3A%2F%2Ffleet.taxi.yandex.ru&quot;,&quot;changeDefaultUrlObj&quot;:{&quot;protocol&quot;:null,&quot;slashes&quot;:null,&quot;auth&quot;:null,&quot;host&quot;:null,&quot;port&quot;:null,&quot;hostname&quot;:null,&quot;hash&quot;:null,&quot;search&quot;:null,&quot;query&quot;:{&quot;action&quot;:&quot;change_default&quot;,&quot;yu&quot;:&quot;68583321567171385&quot;},&quot;pathname&quot;:&quot;//passport.yandex.ru/passport&quot;,&quot;path&quot;:&quot;//passport.yandex.ru/passport?mode=embeddedauth&quot;,&quot;href&quot;:&quot;//passport.yandex.ru/passport?mode=embeddedauth&quot;},&quot;multilogoutUrlObj&quot;:{&quot;protocol&quot;:null,&quot;slashes&quot;:null,&quot;auth&quot;:null,&quot;host&quot;:null,&quot;port&quot;:null,&quot;hostname&quot;:null,&quot;hash&quot;:null,&quot;search&quot;:null,&quot;query&quot;:{&quot;action&quot;:&quot;logout&quot;,&quot;yu&quot;:&quot;68583321567171385&quot;},&quot;pathname&quot;:&quot;//passport.yandex.ru/passport&quot;,&quot;path&quot;:&quot;//passport.yandex.ru/passport?mode=embeddedauth&quot;,&quot;href&quot;:&quot;//passport.yandex.ru/passport?mode=embeddedauth&quot;},&quot;profile_url&quot;:&quot;https://passport.yandex.ru/profile?retpath=https%3A%2F%2Ffleet.taxi.yandex.ru&quot;,&quot;yandex_url&quot;:&quot;https://yandex.ru&quot;,&quot;restoration_url&quot;:&quot;https://passport.yandex.ru/restoration?retpath=https%3A%2F%2Ffleet.taxi.yandex.ru&amp;login=login&amp;process_uuid=84693b2f-cc3d-4e4e-8013-1bc7918515ba&quot;,&quot;restoration_login_url&quot;:&quot;https://passport.yandex.ru/restoration/login?retpath=https%3A%2F%2Ffleet.taxi.yandex.ru&amp;process_uuid=84693b2f-cc3d-4e4e-8013-1bc7918515ba&quot;,&quot;registration_url&quot;:&quot;https://passport.yandex.ru/registration?retpath=https%3A%2F%2Ffleet.taxi.yandex.ru&amp;process_uuid=84693b2f-cc3d-4e4e-8013-1bc7918515ba&quot;,&quot;lite_registration_url&quot;:&quot;https://passport.yandex.ru/registration/lite?retpath=https%3A%2F%2Ffleet.taxi.yandex.ru&amp;process_uuid=84693b2f-cc3d-4e4e-8013-1bc7918515ba&quot;,&quot;registration_url_with_params&quot;:&quot;https://passport.yandex.ru/registration?retpath=https%3A%2F%2Ffleet.taxi.yandex.ru&amp;login=login&amp;phone_number=phone_number&amp;country=country&amp;process_uuid=84693b2f-cc3d-4e4e-8013-1bc7918515ba&quot;,&quot;lite_registration_url_with_params&quot;:&quot;https://passport.yandex.ru/registration/lite?retpath=https%3A%2F%2Ffleet.taxi.yandex.ru&amp;login=login&amp;phone_number=phone_number&amp;country=country&amp;process_uuid=84693b2f-cc3d-4e4e-8013-1bc7918515ba&quot;,&quot;preRegisterUrl&quot;:&quot;/auth/preregister?retpath=https%3A%2F%2Ffleet.taxi.yandex.ru&quot;,&quot;sberbankSignInUrl&quot;:&quot;https://social.yandex.ru/broker2/start?consumer=passport&amp;application=sberbank&amp;provider=sberbank&amp;retpath=https%3A%2F%2Ffleet.taxi.yandex.ru&quot;,&quot;pane&quot;:&quot;/auth&quot;},&quot;settings&quot;:{&quot;avatar&quot;:{&quot;host&quot;:&quot;avatars.mds.yandex.net&quot;,&quot;pathname&quot;:&quot;/get-yapic/%uid%/islands-%size%&quot;,&quot;default_300&quot;:&quot;https://avatars.mds.yandex.net/get-yapic/0/0-0/islands-300&quot;,&quot;avatar_300&quot;:&quot;https://avatars.mds.yandex.net/get-yapic/%avatar_id%/islands-300&quot;},&quot;staticPath&quot;:&quot;https://yastatic.net/passport-frontend/0.2.126-9/public&quot;,&quot;env&quot;:{&quot;type&quot;:&quot;production&quot;,&quot;name&quot;:&quot;&quot;},&quot;help&quot;:{&quot;passport&quot;:&quot;https://yandex.%tld%/support/passport/&quot;,&quot;restore&quot;:&quot;https://yandex.%tld%/support/passport/&quot;,&quot;change_password&quot;:&quot;https://yandex.%tld%/support/passport/security/force-password-change.xml&quot;,&quot;change_password_form&quot;:&quot;https://yandex.%tld%/support/passport/security/force-password-change-form.xml&quot;,&quot;auth_challenges&quot;:&quot;https://yandex.%tld%/support/passport/security/login-challenge-form.xml&quot;,&quot;restore-semiauto&quot;:&quot;https://yandex.%tld%/support/passport/support-restore.xml&quot;},&quot;intranet&quot;:false,&quot;lang&quot;:&quot;ru&quot;,&quot;langlist&quot;:[{&quot;id&quot;:&quot;ru&quot;,&quot;name&quot;:&quot;Ru&quot;,&quot;link&quot;:&quot;https://yandex.ru/portal/set/lang/?sk=yea45b7fbbb48f4d2c0d49255a812a2ac&amp;retpath=https%3A%2F%2Fpassport.yandex.ru%2Fauth%2Fwelcome%3Fretpath%3Dhttps%253A%252F%252Ffleet.taxi.yandex.ru&amp;intl=ru&quot;}],&quot;tld&quot;:&quot;ru&quot;,&quot;host&quot;:&quot;https://passport.yandex.ru&quot;,&quot;ua&quot;:{}},&quot;social&quot;:{&quot;providers&quot;:[{&quot;id&quot;:1,&quot;enabled&quot;:true,&quot;primary&quot;:true,&quot;data&quot;:{&quot;id&quot;:1,&quot;code&quot;:&quot;vk&quot;,&quot;name&quot;:&quot;vkontakte&quot;,&quot;display_name&quot;:{&quot;default&quot;:&quot;ВКонтакте&quot;,&quot;ru&quot;:&quot;ВКонтакте&quot;,&quot;uk&quot;:&quot;ВКонтакті&quot;,&quot;be&quot;:&quot;ВКонтакте&quot;,&quot;en&quot;:&quot;VKontakte&quot;,&quot;tr&quot;:&quot;VKontakte&quot;}}},{&quot;id&quot;:6,&quot;enabled&quot;:true,&quot;primary&quot;:true,&quot;data&quot;:{&quot;id&quot;:6,&quot;code&quot;:&quot;ok&quot;,&quot;name&quot;:&quot;odnoklassniki&quot;,&quot;display_name&quot;:{&quot;default&quot;:&quot;Одноклассники&quot;,&quot;ru&quot;:&quot;Одноклассники&quot;,&quot;uk&quot;:&quot;Однокласники&quot;,&quot;en&quot;:&quot;Odnoklassniki&quot;,&quot;tr&quot;:&quot;Odnoklasniki&quot;}}},{&quot;id&quot;:3,&quot;enabled&quot;:true,&quot;primary&quot;:false,&quot;data&quot;:{&quot;id&quot;:3,&quot;code&quot;:&quot;tw&quot;,&quot;name&quot;:&quot;twitter&quot;,&quot;display_name&quot;:{&quot;default&quot;:&quot;Twitter&quot;}}},{&quot;id&quot;:4,&quot;enabled&quot;:true,&quot;primary&quot;:false,&quot;data&quot;:{&quot;id&quot;:4,&quot;code&quot;:&quot;mr&quot;,&quot;name&quot;:&quot;mailru&quot;,&quot;display_name&quot;:{&quot;default&quot;:&quot;Mail.ru&quot;}}},{&quot;id&quot;:5,&quot;enabled&quot;:true,&quot;primary&quot;:false,&quot;data&quot;:{&quot;id&quot;:5,&quot;code&quot;:&quot;gg&quot;,&quot;name&quot;:&quot;google&quot;,&quot;display_name&quot;:{&quot;default&quot;:&quot;Google&quot;}}},{&quot;id&quot;:2,&quot;enabled&quot;:true,&quot;primary&quot;:true,&quot;data&quot;:{&quot;id&quot;:2,&quot;code&quot;:&quot;fb&quot;,&quot;name&quot;:&quot;facebook&quot;,&quot;display_name&quot;:{&quot;default&quot;:&quot;Facebook&quot;}}}],&quot;brokerPath&quot;:&quot;https://social.yandex.%tld%/broker2/start&quot;,&quot;brokerParams&quot;:{&quot;startUrl&quot;:&quot;/auth/social/start&quot;,&quot;retpath&quot;:&quot;/auth/i-social__closer.html&quot;,&quot;consumer&quot;:&quot;passport&quot;,&quot;popupName&quot;:&quot;passport_social&quot;,&quot;display&quot;:&quot;popup&quot;,&quot;place&quot;:&quot;fragment&quot;}},&quot;captcha&quot;:{&quot;loading&quot;:false,&quot;loadingAudio&quot;:false,&quot;playing&quot;:false,&quot;type&quot;:&quot;text&quot;,&quot;key&quot;:null,&quot;imageUrl&quot;:null,&quot;introSound&quot;:null,&quot;captchaSound&quot;:null},&quot;metrics&quot;:{&quot;header&quot;:&quot;Новый домик V3&quot;,&quot;experiments&quot;:&quot;Nm36Jz3AtTlE-dwWgPg9AdNE75JC7IgAabOgjqifPhf6e_xe0yyKzcCiyd75YRy63XfSS9zY3tbAJI_d-EmaDpzn4EhydiKk&quot;},&quot;monitoring&quot;:{&quot;page&quot;:&quot;auth.v2&quot;},&quot;auth&quot;:{&quot;process_uuid&quot;:&quot;84693b2f-cc3d-4e4e-8013-1bc7918515ba&quot;,&quot;isQRAuthEnabled&quot;:false,&quot;authorizedAccounts&quot;:[],&quot;form&quot;:{&quot;login&quot;:&quot;&quot;,&quot;password&quot;:&quot;&quot;,&quot;captcha_answer&quot;:&quot;&quot;,&quot;isCanRegister&quot;:false,&quot;isForceOTP&quot;:false,&quot;registrationLogin&quot;:&quot;&quot;,&quot;registrationType&quot;:&quot;&quot;,&quot;registrationPhoneNumber&quot;:&quot;&quot;,&quot;registrationCountry&quot;:&quot;&quot;},&quot;loginError&quot;:&quot;&quot;,&quot;passwordError&quot;:&quot;&quot;,&quot;captchaError&quot;:&quot;&quot;,&quot;magicError&quot;:&quot;&quot;,&quot;inputLogins&quot;:null,&quot;authorizedAccountsDefaultUid&quot;:null,&quot;canAddMore&quot;:true,&quot;method&quot;:&quot;password&quot;,&quot;needEmpty&quot;:false,&quot;passwordType&quot;:&quot;password&quot;,&quot;processedAccount&quot;:null,&quot;submitCounter&quot;:0,&quot;suggestedAccounts&quot;:[],&quot;unitedAccounts&quot;:{},&quot;isAdditionalDataRequestEnabled&quot;:true,&quot;isRestoreLoginEnabled&quot;:false,&quot;isRestoreLoginTextExp&quot;:false,&quot;isQRPromo1Enabled&quot;:false,&quot;isQRPromo2Enabled&quot;:false,&quot;isQRPromoPart2Enabled&quot;:false,&quot;isQRAuthPromoShowed&quot;:false,&quot;isPreAuthExp1&quot;:false,&quot;isPreAuthExp2&quot;:false,&quot;isDefaultTextsExp&quot;:false,&quot;isRegisterButtonExperiment&quot;:true,&quot;registerButtonTheme&quot;:&quot;normal&quot;,&quot;registerButtonExperimentNumber&quot;:3,&quot;isNextStepBtnExp&quot;:false,&quot;isWelcomePageTitleExp&quot;:false},&quot;mobileMenu&quot;:{&quot;isShowMobileMenu&quot;:false,&quot;mobileMenuType&quot;:null,&quot;processedAccountUid&quot;:null},&quot;pagePopup&quot;:{&quot;isShowPagePopup&quot;:false,&quot;pagePopupType&quot;:null},&quot;customs&quot;:{},&quot;mailAuth&quot;:{&quot;isEnabled&quot;:false,&quot;isUpdatedAuthLetterStatus&quot;:false},&quot;messengerAuth&quot;:{},&quot;restoreLogin&quot;:{}}"
+      data-logger-token="47fbb5f1163f05aa2e8910db0152a25b"
+      data-login="null"
+      data-metrics-id="784657" data-passportHost="&quot;passport.yandex.ru&quot;" data-static-url="https://yastatic.net/passport-frontend/0.2.126-9/public/"
+      data-tld="ru" data-uid="null">
+<div class="layout" id="root">
+    <div class="passp-flex-wrapper">
+        <div class="passp-page">
+            <div class="passp-bg passp-bg_9"></div>
+            <div class="passp-flex-wrapper">
+                <div class="passp-content">
+                    <div class="passp-auth">
+                        <div class="passp-page-overlay"></div>
+                        <a class="control link link_theme_normal passp-previous-step-button" data-lego="react" href="https://fleet.taxi.yandex.ru"
+                           tabindex="0"><span
+                                class="passp-previous-step-button__icon"
+                                data-link="https://fleet.taxi.yandex.ru"></span></a>
+                        <div class="passp-auth-header"><a class="control link link_theme_normal passp-auth-header-link passp-auth-header-link_visible"
+                                                          data-lego="react"
+                                                          href="https://passport.yandex.ru/registration?retpath=https%3A%2F%2Ffleet.taxi.yandex.ru&amp;process_uuid=84693b2f-cc3d-4e4e-8013-1bc7918515ba"
+                                                          tabindex="0">Зарегистрироваться</a><a
+                                class="control link link_theme_normal passp-auth-header-link"
+                                data-lego="react" href="/auth/list?retpath=https%3A%2F%2Ffleet.taxi.yandex.ru&amp;mode=edit"
+                                tabindex="0">Другой аккаунт</a><a
+                                class="logo logo_name_ys-ru-98x42 logo_type_link passp-logo passp-logo_ru" data-lego="react" href="//yandex.ru"
+                                tabindex="-1">logo:yandex</a>
+                        </div>
+                        <div class="passp-auth-content">
+                            <div class="passp-page-visibility"></div>
+                            <div class="">
+                                <div class="passp-auth-screen passp-add-account-page">
+                                    <div class="passp-add-account-page_has-social-block"><h1 class="passp-title "><span>Войдите, чтобы продолжить</span>
+                                    </h1>
+                                        <div class="passp-login-form">
+                                            <form action="https://passport.yandex.ru/auth?retpath=https%3A%2F%2Ffleet.taxi.yandex.ru"
+                                                  method="post">
+                                                <input name="retpath" type="hidden"
+                                                       value="https://fleet.taxi.yandex.ru"/><input name="fretpath"
+                                                                                                    type="hidden"
+                                                                                                    value=""/><input
+                                                    name="clean" type="hidden" value=""/><input name="service"
+                                                                                                type="hidden"
+                                                                                                value=""/><input
+                                                    name="origin" type="hidden" value=""/><input name="policy"
+                                                                                                 type="hidden"
+                                                                                                 value=""/><input
+                                                    name="is_pdd" type="hidden" value=""/><input name="csrf_token"
+                                                                                                 type="hidden"
+                                                                                                 value="eb8fd51433180ff188fee8fe5a9c9596712e2e7c:1567171385750"/>
+                                                <div class="passp-form-field ">
+                                                    <div class="passp-form-field__input"><input autoCapitalize="off"
+                                                                                                autoComplete="username"
+                                                                                                autoCorrect="off"
+                                                                                                id="passp-field-login"
+                                                                                                name="login"
+                                                                                                type="text"/><label
+                                                            class="passp-form-field__label" for="passp-field-login">Введите
+                                                        логин, почту или телефон</label></div>
+                                                    <div class="passp-form-field__link"><a class="control link link_theme_normal"
+                                                                                           data-lego="react"
+                                                                                           href="https://passport.yandex.ru/restoration/login?retpath=https%3A%2F%2Ffleet.taxi.yandex.ru&amp;process_uuid=84693b2f-cc3d-4e4e-8013-1bc7918515ba"
+                                                                                           tabindex="0">Не помню
+                                                        логин</a></div>
+                                                </div>
+                                                <input aria-hidden="true" autoComplete="off"
+                                                       class="passp-hidden-password-field" id="hiddenPassword" name="hidden-password"
+                                                       tabindex="-1" type="password"/>
+                                                <div class="passp-button passp-register-button"><a class="control button2 button2_view_classic button2_size_l button2_theme_normal button2_width_max button2_type_link passp-form-button"
+                                                                                                   data-lego="react"
+                                                                                                   href="https://passport.yandex.ru/registration/lite?retpath=https%3A%2F%2Ffleet.taxi.yandex.ru&amp;process_uuid=84693b2f-cc3d-4e4e-8013-1bc7918515ba"
+                                                                                                   tabindex="0"><span
+                                                        class="button2__text" data-lego="react">Зарегистрировать </span></a>
+                                                </div>
+                                                <div class="passp-button passp-sign-in-button">
+                                                    <button autoComplete="off" class="control button2 button2_view_classic button2_size_l button2_theme_action button2_width_max button2_type_submit passp-form-button" data-lego="react"
+                                                            type="submit">
+                                                        <span class="button2__text" data-lego="react">Войти</span>
+                                                    </button>
+                                                    <button aria-disabled="false" autoComplete="off" class="control button2 button2_view_classic button2_size_l button2_theme_action button2_width_max passp-sign-in-button__magic-link"
+                                                            data-lego="react"
+                                                            type="button">
+                                                        <span class="button2__text" data-lego="react"><span
+                                                                class="passp-sign-in-button__magic-link-icon"></span></span>
+                                                    </button>
+                                                </div>
+                                                <div class="passp-button passp-exp-register-button"><a class="control button2 button2_view_classic button2_size_l button2_theme_normal button2_width_max button2_type_link passp-form-button"
+                                                                                                       data-lego="react"
+                                                                                                       href="https://passport.yandex.ru/registration?retpath=https%3A%2F%2Ffleet.taxi.yandex.ru&amp;process_uuid=84693b2f-cc3d-4e4e-8013-1bc7918515ba"
+                                                                                                       tabindex="0"><span
+                                                        class="button2__text"
+                                                        data-lego="react">Зарегистрироваться</span></a></div>
+                                            </form>
+                                        </div>
+                                        <div class="passp-social-block"><h3 class="passp-social-block__title">Войти
+                                            с помощью соцсетей</h3>
+                                            <ul class="passp-social-block__list">
+                                                <li class="passp-social-block__list-item passp-social-block__list-item-vk"
+                                                    tabindex="0"><span
+                                                        class="passp-social-block__list-item-icon passp-social-block__list-item-icon_vk"></span>
+                                                </li>
+                                                <li class="passp-social-block__list-item passp-social-block__list-item-fb"
+                                                    tabindex="0"><span
+                                                        class="passp-social-block__list-item-icon passp-social-block__list-item-icon_fb"></span>
+                                                </li>
+                                                <li class="passp-social-block__list-item passp-social-block__list-item-gg"
+                                                    tabindex="0"><span
+                                                        class="passp-social-block__list-item-icon passp-social-block__list-item-icon_gg"></span>
+                                                </li>
+                                                <li class="passp-social-block__list-item passp-social-block__list-item-mr passp-social-block__list-item-secondary"
+                                                    tabindex="-1"><span
+                                                        class="passp-social-block__list-item-icon passp-social-block__list-item-icon_mr"></span>
+                                                </li>
+                                                <li class="passp-social-block__list-item passp-social-block__list-item-ok passp-social-block__list-item-secondary"
+                                                    tabindex="-1"><span
+                                                        class="passp-social-block__list-item-icon passp-social-block__list-item-icon_ok"></span>
+                                                </li>
+                                                <li class="passp-social-block__list-item passp-social-block__list-item-tw passp-social-block__list-item-secondary"
+                                                    tabindex="-1"><span
+                                                        class="passp-social-block__list-item-icon passp-social-block__list-item-icon_tw"></span>
+                                                </li>
+                                                <li class="passp-social-block__list-item passp-social-block__list-item_more"
+                                                    tabindex="0">
+                                                    <span class="passp-social-block__list-item-icon passp-social-block__list-item-icon_more"></span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <iframe class="passp-iframe" name="iframe" src="about:blank"></iframe>
+                    </div>
+                </div>
+            </div>
+            <footer class="passp-footer">
+                <div class="passp-footer__wrapper">
+                    <div class="passp-footer__incognito-link"><span class="passp-footer__item"><a class="control link link_theme_normal"
+                                                                                                  data-lego="react"
+                                                                                                  href="https://yandex.ru/support/common/browsers-settings/incognito.html"
+                                                                                                  tabindex="0"
+                                                                                                  target="_blank">Используйте режим инкогнито на чужом компьютере</a></span>
+                    </div>
+                    <div class="passp-footer__main-block"><span class="passp-footer__item"><a class="control link link_theme_normal"
+                                                                                              data-lego="react"
+                                                                                              href="https://yandex.ru/support/passport/"
+                                                                                              tabindex="0"
+                                                                                              target="_blank">Помощь</a></span><span
+                            class="passp-footer__item"><span class="passp-footer__copyright">© 2001-2019, </span><a
+                            class="control link link_theme_normal" data-lego="react" href="//yandex.ru" tabindex="0">Яндекс</a></span>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+</div>
+<noscript>
+    <div><img alt="" src="//mc.yandex.ru/watch/784657" style="position:absolute; left:-9999px;"/></div>
+</noscript>
+</body>
+</html>

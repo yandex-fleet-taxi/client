@@ -1,0 +1,16 @@
+version: '3.3'
+
+services:
+  composer:
+    image: composer:1.8
+    volumes:
+      - .:/app
+
+  tests:
+    build: ./docker/tests
+    working_dir: /app
+    environment:
+      - PHP_IDE_CONFIG=serverName=Docker
+    volumes:
+      - .:/app
+    command: ./vendor/bin/phpunit --bootstrap vendor/autoload.php tests

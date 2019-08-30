@@ -1,0 +1,34 @@
+{
+  "name": "likemusic/yandex-fleet-taxi-client",
+  "description": "Simple client for https://fleet.taxi.yandex.ru/",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Valerij Ivashchenko",
+      "email": "likemusicdev@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Likemusic\\YandexFleetTaxiClient\\": "src/",
+      "Likemusic\\YandexFleetTaxiClient\\Tests\\": "tests/"
+    }
+  },
+  "require": {
+    "ext-libxml": "*",
+    "ext-dom": "*",
+
+    "php-http/message": "^1.8",
+    "php-http/curl-client": "^2.0",
+    "guzzlehttp/psr7": "^1.6",
+    "puli/composer-plugin": "^1.0@beta",
+    "puli/cli": "^1.0@beta",
+    "http-interop/http-factory-guzzle": "^1.0",
+    "php-http/client-common": "^2.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^8"
+  }
+}
