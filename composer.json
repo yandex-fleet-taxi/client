@@ -17,8 +17,10 @@
     }
   },
   "require": {
+    "php": "^7.3",
     "ext-libxml": "*",
     "ext-dom": "*",
+    "ext-json": "*",
 
     "php-http/message": "^1.8",
     "php-http/curl-client": "^2.0",

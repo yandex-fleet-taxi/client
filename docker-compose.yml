@@ -13,4 +13,5 @@ services:
       - PHP_IDE_CONFIG=serverName=Docker
     volumes:
       - .:/app
-    command: ./vendor/bin/phpunit --bootstrap vendor/autoload.php tests
+    entrypoint: ./vendor/bin/phpunit --bootstrap vendor/autoload.php
+    command: ['tests']

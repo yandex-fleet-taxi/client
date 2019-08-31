@@ -12,13 +12,20 @@ use Http\Client\HttpClient;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\RequestFactoryInterface;
+use Likemusic\YandexFleetTaxiClient\PageParser\PassportYandexRu\Auth\Welcome as WelcomePageParser;
+use Likemusic\YandexFleetTaxiClient\PageParser\PassportYandexRu\Auth\Welcome\Data as WelcomePageParserData ;
+use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Http\Message\StreamInterface;
+use Http\Message\CookieJar;
+use Http\Client\Common\PluginClient;
+use Http\Client\Common\Plugin\CookiePlugin;
 
 class Client implements ClientInterface
 {
     /**
      * @var HttpClient
      */
-    private $httpClient;
+    private $httpPluginClient;
 
     /**
      * @var RequestFactoryInterface
@@ -26,27 +33,44 @@ class Client implements ClientInterface
     private $requestFactory;
 
     /**
-     * @var StreamFactory
+     * @var StreamFactoryInterface
      */
     private $streamFactory;
     //private $uriFactory;
 
     /**
+     * @var WelcomePageParser
+     */
+    private $welcomePageParser;
+
+    /**
      *
      * @param HttpClient $httpClient
      * @param RequestFactoryInterface $requestFactory
-     * @param StreamFactory $streamFactory
+     * @param WelcomePageParser $welcomePageParser
+     * @param StreamFactoryInterface $streamFactory
      */
     public function __construct(
         HttpClient $httpClient,
-        RequestFactoryInterface $requestFactory
-//        StreamFactory $streamFactory
+        RequestFactoryInterface $requestFactory,
+        WelcomePageParser $welcomePageParser,
+        StreamFactoryInterface $streamFactory
         //UriFactory $uriFactory
     ) {
-        $this->httpClient = $httpClient;
         $this->requestFactory = $requestFactory;
-//        $this->streamFactory = $streamFactory;
+        $this->streamFactory = $streamFactory;
         //$this->uriFactory = $uriFactory;
+        $this->welcomePageParser = $welcomePageParser;
+
+        $cookiePlugin = new CookiePlugin(new CookieJar());
+
+        $pluginClient = new PluginClient(
+            $httpClient,
+            [$cookiePlugin]
+        );
+
+        $this->httpPluginClient = $pluginClient;
+
     }
 
     /**
@@ -58,16 +82,64 @@ class Client implements ClientInterface
      */
     public function login(string $login, string $password, bool $rememberMe = false)
     {
-        $response = $this->openPassportPage();
+        $passportPageResponse = $this->getPassportPage();
 
-        list($csrfToken, $processUuid, $retpath) = $this->getVarsFromPassportPageResponse($response);
-        $this->submitLogin($login, $csrfToken, $processUuid, $retpath);
-        //$this->submitPassword();
+        $welcomePageParserData = $this->getDataFromPassportPageResponse($passportPageResponse);
+
+        $csrfToken = $welcomePageParserData->getCsrfToken();
+        $processUuid = $welcomePageParserData->getProcessUuid();
+        $retPath = 'https://fleet.taxi.yandex.ru';
+
+        $loginPageResponse = $this->submitLogin($login, $csrfToken, $processUuid, $retPath);
+        list($tackId) = $this->getDataFromLoginPageResponse($loginPageResponse);
+
+        $passwordPageResponse = $this->submitPassword($csrfToken, $tackId, $password);
+
+        $dashboardResponse = $this->getDashboardPage();
+
+        $dashboardPageData = $this->getDataFromDashboardPageResponse($dashboardResponse);
 
         //$request = $this->requestFactory->createRequest(HttpMethodInterface::POST, 'http://httplug.io', [], );
     }
 
-    private function getVarsFromPassportPageResponse(ResponseInterface $response)
+    private function getDataFromDashboardPageResponse(ResponseInterface $dashboardResponse)
+    {
+        $body = $dashboardResponse->getBody()->getContents();
+
+        return $this->getDataFromDashboardPage($body);
+    }
+
+    private function getDataFromDashboardPage(string $html)
+    {
+
+    }
+
+    private function getDataFromLoginPageResponse(ResponseInterface $response)
+    {
+        $body = $response->getBody()->getContents();
+
+        return $this->getDataFromLoginPage($body);
+    }
+
+    private function getDataFromLoginPage(string $json)
+    {
+        $data = json_decode($json, true);
+
+        return [$data['track_id']];
+    }
+
+    /**
+     * @param ResponseInterface $passportPageResponse
+     * @param string $login
+     * @return ResponseInterface
+     * @throws Exception
+     * @throws HttpClientException
+     */
+    private function submitLoginByPassportPageResponse(ResponseInterface $passportPageResponse, string $login): ResponseInterface
+    {
+    }
+
+    private function getDataFromPassportPageResponse(ResponseInterface $response)
     {
         $bodyStream = $response->getBody();
         $body = $bodyStream->getContents();
@@ -75,29 +147,77 @@ class Client implements ClientInterface
         return $this->getVarsFromPassportPage($body);
     }
 
-    private function getVarsFromPassportPage(string $body)
+    private function getVarsFromPassportPage(string $body): WelcomePageParserData
     {
-        $csrfToken = null;
-        $processUuid = null;
-
-        return [
-            $csrfToken,
-            $processUuid,
-        ];
+        return $this->welcomePageParser->getData($body);
     }
 
 
-    private function submitLogin(string $login, string $csrfToken, string $processUuid, string $retpath)
+    /**
+     * @param string $login
+     * @param string $csrfToken
+     * @param string $processUuid
+     * @param string $retPath
+     * @return ResponseInterface
+     * @throws Exception
+     * @throws HttpClientException
+     */
+    private function submitLogin(string $login, string $csrfToken, string $processUuid, string $retPath)
     {
         $uri = 'https://passport.yandex.ru/registration-validations/auth/multi_step/start';
         $postData = [
             'csrf_token' => $csrfToken,
             'login' => $login,
             'process_uuid' => $processUuid,
-            'retpath' => $retpath,
+            'retpath' => $retPath,
         ];
 
-        return $this->sendPostUrlEncodedRequest($uri, $postData);
+        $response =  $this->sendPostUrlEncodedRequest($uri, $postData);
+
+        $this->validateResponse($response);
+
+        return $response;
+    }
+
+    /**
+     * @param string $csrfToken
+     * @param string $trackId
+     * @param string $password
+     * @return ResponseInterface
+     * @throws Exception
+     * @throws HttpClientException
+     */
+    private function submitPassword(string $csrfToken, string $trackId, string $password)
+    {
+        $uri = 'https://passport.yandex.ru/registration-validations/auth/multi_step/commit_password';
+
+        $postData = [
+            'csrf_token' => $csrfToken,
+            'track_id' => $trackId,
+            'password' => $password,
+        ];
+
+        $response =  $this->sendPostUrlEncodedRequest($uri, $postData);
+
+        $this->validateResponse($response);
+
+        $this->validatePasswordResponse($response);
+
+        return $response;
+    }
+
+    /**
+     * @param ResponseInterface $response
+     * @throws Exception
+     */
+    private function validatePasswordResponse(ResponseInterface $response)
+    {
+        $body = $response->getBody()->getContents();
+        $data = json_decode($body, true);
+
+        if ($data['status'] !=='ok') {
+            throw new Exception("Bad status ({$data['status']})for Password page. Body: " . $body);
+        }
     }
 
     /**
@@ -115,7 +235,6 @@ class Client implements ClientInterface
         $body = http_build_query($postData);
 
         $stream = $this->streamFactory->createStream($body);
-        $body = null;
 
         return $this->sendPostRequest($uri, $stream, $headers);
     }
@@ -127,7 +246,7 @@ class Client implements ClientInterface
      * @return ResponseInterface
      * @throws HttpClientException
      */
-    private function sendPostRequest(string $uri, $body = null, $headers = [])
+    private function sendPostRequest(string $uri, StreamInterface $body = null, $headers = [])
     {
         $request = $this->createPostRequest($uri, $headers, $body);
 
@@ -140,9 +259,23 @@ class Client implements ClientInterface
      * @throws Exception
      * @throws HttpClientException
      */
-    private function openPassportPage()
+    private function getPassportPage()
     {
         $response = $this->sendGetRequest('https://passport.yandex.ru/auth/welcome?retpath=https%3A%2F%2Ffleet.taxi.yandex.ru');
+        $this->validateResponse($response);
+
+        return $response;
+    }
+
+
+    /**
+     * @return ResponseInterface
+     * @throws Exception
+     * @throws HttpClientException
+     */
+    private function getDashboardPage()
+    {
+        $response = $this->sendGetRequest('https://fleet.taxi.yandex.ru/');
         $this->validateResponse($response);
 
         return $response;
@@ -178,10 +311,10 @@ class Client implements ClientInterface
      */
     private function sendRequest(RequestInterface $request) :ResponseInterface
     {
-        return $this->httpClient->sendRequest($request);
+        return $this->httpPluginClient->sendRequest($request);
     }
 
-    private function createPostRequest($uri, $headers = [], $body = null) :RequestInterface
+    private function createPostRequest($uri, $headers = [], StreamInterface $body = null) :RequestInterface
     {
         $request = $this->createRequest(HttpMethodInterface::POST, $uri);
 
@@ -190,8 +323,10 @@ class Client implements ClientInterface
         }
 
         if ($body) {
-            $request->withBody($body);
+            $request = $request->withBody($body);
         }
+
+        return $request;
     }
 
     private function addHeaders(RequestInterface $request, array $headers)

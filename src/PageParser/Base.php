@@ -3,27 +3,46 @@
 namespace Likemusic\YandexFleetTaxiClient\PageParser;
 
 use DOMDocument;
+use DOMElement;
+use DOMNodeList;
 use DOMXPath;
 
-class Base
+abstract class Base
 {
-    /**
-     * @var DOMXPath
-     */
-    private $domXPath;
+    public function getData($html)
+    {
+        $domXpath = $this->getDomXpathByHtml($html);
 
-    public function __construct($html)
+        return $this->getDataByDomXPath($domXpath);
+    }
+
+    abstract protected function getDataByDomXPath(DOMXPath $DOMXPath);
+
+    private function getDomXpathByHtml(string $html)
     {
         libxml_use_internal_errors(true);
         $domDocument = new DOMDocument();
         $domDocument->loadHTML($html);
         libxml_use_internal_errors(false);
 
-        $this->domXPath = new DOMXPath($domDocument);
+        return new DOMXPath($domDocument);
     }
 
-    protected function getByXpath(string $xpath)
+    protected function getByXpath(DOMXPath $DOMXPath, string $xpath) : DOMNodeList
     {
-        return $this->domXPath->evaluate($xpath);
+        return $DOMXPath->evaluate($xpath);
     }
+
+    protected function getFirstByXPath(DOMXPath $DOMXPath, string $xPathQuery) : DOMElement
+    {
+        $domNodeList = $this->getByXPath($DOMXPath, $xPathQuery);
+
+        return $domNodeList->item(0);
+    }
+
+    protected function getFirstValueByXPath(DOMXPath $DOMXPath, $xPathQuery) : string
+    {
+        return $this->getFirstByXPath($DOMXPath, $xPathQuery)->nodeValue;
+    }
+
 }
