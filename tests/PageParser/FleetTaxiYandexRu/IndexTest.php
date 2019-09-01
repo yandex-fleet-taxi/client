@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class IndexTest extends TestCase
 {
-    const EXPECTED_DATA = [
+    const EXPECTED_DATA_LANG_DEFAULT = [
         0 =>
             [
                 'id' => '8d40b7c41af544afa0499b9d0bdf2430',
@@ -33,13 +33,39 @@ class IndexTest extends TestCase
             ],
     ];
 
+    const EXPECTED_DATA_LANG_RUSSIAN = [
+        0 =>
+            [
+                'id' => '8d40b7c41af544afa0499b9d0bdf2430',
+                'clid' => '400000110566',
+                'city' => 'Ставрополь',
+                'city_original' => 'Ставрополь',
+                'country_id' => 'rus',
+                'country_name' => 'Россия',
+                'currency_id' => 'RUB',
+                'locale' => 'ru',
+                'sub_agggregation' => false,
+                'timezone' => 3,
+                'self_employed' => false,
+                'franchising' => false,
+                'providers' =>
+                    [
+                        0 => 'park',
+                        1 => 'yandex',
+                    ],
+                'short_name' => 'Сокол РФ 26',
+                'name' => 'Сокол РФ 26, Ставрополь',
+                'brand' => 1,
+            ],
+    ];
+
     public function testGetData()
     {
         $html = $this->getTestPageContent();
         $parser = new IndexPageParser();
         $parserData = $parser->getData($html);
 
-        $this->assertEquals(self::EXPECTED_DATA, $parserData);
+        $this->assertEquals(self::EXPECTED_DATA_LANG_DEFAULT, $parserData);
     }
 
     private function getTestPageContent()

@@ -3,19 +3,23 @@ declare(strict_types=1);
 
 namespace Likemusic\YandexFleetTaxiClient\Tests;
 
-use Likemusic\YandexFleetTaxiClient\Client;
-use PHPUnit\Framework\TestCase;
+use Http\Client\Exception as HttpClientException;
 use Http\Discovery\HttpClientDiscovery;
-use Http\Discovery\MessageFactoryDiscovery;
 use Http\Discovery\Psr17FactoryDiscovery;
-use \Likemusic\YandexFleetTaxiClient\PageParser\PassportYandexRu\Auth\Welcome as WelcomePageParser;
-use Http\Message\StreamFactory;
-use Likemusic\YandexFleetTaxiClient\Tests\PageParser\FleetTaxiYandexRu\IndexTest;
+use Likemusic\YandexFleetTaxiClient\Client;
+use Likemusic\YandexFleetTaxiClient\Exception as ClientException;
 use Likemusic\YandexFleetTaxiClient\PageParser\FleetTaxiYandexRu\Index as DashboardPageParser;
+use Likemusic\YandexFleetTaxiClient\PageParser\PassportYandexRu\Auth\Welcome as WelcomePageParser;
+use Likemusic\YandexFleetTaxiClient\Tests\PageParser\FleetTaxiYandexRu\IndexTest;
+use PHPUnit\Framework\TestCase;
+use Likemusic\YandexFleetTaxiClient\Contracts\LocaleInterface;
 
 final class ClientTest extends TestCase
 {
     /**
+     * @return Client
+     * @throws ClientException
+     * @throws HttpClientException
      * @doesNotPerformAssertions
      */
     public function testLogin()
@@ -38,11 +42,28 @@ final class ClientTest extends TestCase
 
     /**
      * @param Client $client
+     * @return Client
+     * @throws HttpClientException
+     * @throws ClientException
      * @depends testLogin
      */
     public function testGetDashboardPageData(Client $client)
     {
         $dashboardPageData = $client->getDashboardPageData();
-        $this->assertEquals(IndexTest::EXPECTED_DATA, $dashboardPageData);
+        $this->assertEquals(IndexTest::EXPECTED_DATA_LANG_DEFAULT, $dashboardPageData);
+
+        return $client;
+    }
+
+    /**
+     * @param Client $client
+     * @throws ClientException
+     * @throws HttpClientException
+     * @depends testGetDashboardPageData
+     */
+    public function testChangeLocale(Client $client)
+    {
+        $dashboardPageData = $client->changeLanguage(LocaleInterface::RUSSIAN);
+        $this->assertEquals(IndexTest::EXPECTED_DATA_LANG_RUSSIAN, $dashboardPageData);
     }
 }

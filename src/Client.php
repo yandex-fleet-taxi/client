@@ -101,8 +101,7 @@ class Client implements ClientInterface
         $loginPageResponse = $this->submitLogin($login, $csrfToken, $processUuid, $retPath);
         list($tackId) = $this->getDataFromLoginPageResponse($loginPageResponse);
 
-        $passwordPageResponse = $this->submitPassword($csrfToken, $tackId, $password);
-        //$request = $this->requestFactory->createRequest(HttpMethodInterface::POST, 'http://httplug.io', [], );
+        $this->submitPassword($csrfToken, $tackId, $password);
     }
 
     /**
@@ -130,7 +129,7 @@ class Client implements ClientInterface
         return $this->sendRequest($request);
     }
 
-    private function createGetRequest($uri, $headers = [], $body = null, $protocolVersion = '1.1'): RequestInterface
+    private function createGetRequest($uri): RequestInterface
     {
         return $this->createRequest(HttpMethodInterface::GET, $uri);
     }
@@ -319,6 +318,11 @@ class Client implements ClientInterface
         }
     }
 
+    /**
+     * @return array
+     * @throws Exception
+     * @throws HttpClientException
+     */
     public function getDashboardPageData()
     {
         $dashboardResponse = $this->getDashboardPage();
@@ -339,17 +343,45 @@ class Client implements ClientInterface
         return $response;
     }
 
-    private function getDataFromDashboardPageResponse(ResponseInterface $dashboardResponse)
+    private function getDataFromDashboardPageResponse(ResponseInterface $dashboardResponse): array
     {
         $body = $dashboardResponse->getBody()->getContents();
 
         return $this->getDataFromDashboardPage($body);
     }
 
-    private function getDataFromDashboardPage(string $html)
+    private function getDataFromDashboardPage(string $html): array
     {
         return $this->dashboardPageParser->getData($html);
     }
+
+    /**
+     * @param string $languageCode
+     * @return array
+     * @throws Exception
+     * @throws HttpClientException
+     */
+    public function changeLanguage(string $languageCode): array
+    {
+        $response = $this->getDashboardPageWithLanguage($languageCode);
+
+        return $this->getDataFromDashboardPageResponse($response);
+    }
+
+    /**
+     * @param string $languageCode
+     * @return ResponseInterface
+     * @throws Exception
+     * @throws HttpClientException
+     */
+    private function getDashboardPageWithLanguage(string $languageCode)
+    {
+        $response = $this->sendGetRequest('https://fleet.taxi.yandex.ru/?lang=' . $languageCode);
+        $this->validateResponse($response);
+
+        return $response;
+    }
+
 
     public function logout()
     {
@@ -359,16 +391,5 @@ class Client implements ClientInterface
     public function addDriverWithNewCar($driverWithNewCar)
     {
         // TODO: Implement addDriverWithNewCar() method.
-    }
-
-    /**
-     * @param ResponseInterface $passportPageResponse
-     * @param string $login
-     * @return ResponseInterface
-     * @throws Exception
-     * @throws HttpClientException
-     */
-    private function submitLoginByPassportPageResponse(ResponseInterface $passportPageResponse, string $login): ResponseInterface
-    {
     }
 }
