@@ -4,6 +4,7 @@ namespace Likemusic\YandexFleetTaxiClient\PageParser;
 
 use DOMDocument;
 use DOMElement;
+use DOMNode;
 use DOMNodeList;
 use DOMXPath;
 
@@ -33,7 +34,7 @@ abstract class Base
         return $DOMXPath->evaluate($xpath);
     }
 
-    protected function getFirstByXPath(DOMXPath $DOMXPath, string $xPathQuery) : DOMElement
+    protected function getFirstByXPath(DOMXPath $DOMXPath, string $xPathQuery) : DOMNode
     {
         $domNodeList = $this->getByXPath($DOMXPath, $xPathQuery);
 

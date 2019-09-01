@@ -2,23 +2,24 @@
 
 namespace Likemusic\YandexFleetTaxiClient;
 
+use Http\Client\Common\Plugin\CookiePlugin;
+use Http\Client\Common\PluginClient;
 use Http\Client\Exception as HttpClientException;
-use Likemusic\YandexFleetTaxiClient\Contracts\ClientInterface;
-//use Http\Message\RequestFactory;
-use Http\Message\StreamFactory;
-//use Http\Message\UriFactory;
-use Likemusic\YandexFleetTaxiClient\Contracts\HttpMethodInterface;
 use Http\Client\HttpClient;
+use Http\Message\CookieJar;
+use Likemusic\YandexFleetTaxiClient\Contracts\ClientInterface;
+use Likemusic\YandexFleetTaxiClient\Contracts\HttpMethodInterface;
+use Likemusic\YandexFleetTaxiClient\PageParser\FleetTaxiYandexRu\Index as DashboardPageParser;
+use Likemusic\YandexFleetTaxiClient\PageParser\PassportYandexRu\Auth\Welcome as WelcomePageParser;
+use Likemusic\YandexFleetTaxiClient\PageParser\PassportYandexRu\Auth\Welcome\Data as WelcomePageParserData;
+use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\RequestFactoryInterface;
-use Likemusic\YandexFleetTaxiClient\PageParser\PassportYandexRu\Auth\Welcome as WelcomePageParser;
-use Likemusic\YandexFleetTaxiClient\PageParser\PassportYandexRu\Auth\Welcome\Data as WelcomePageParserData ;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
-use Http\Message\CookieJar;
-use Http\Client\Common\PluginClient;
-use Http\Client\Common\Plugin\CookiePlugin;
+
+//use Http\Message\RequestFactory;
+//use Http\Message\UriFactory;
 
 class Client implements ClientInterface
 {
@@ -44,17 +45,24 @@ class Client implements ClientInterface
     private $welcomePageParser;
 
     /**
+     * @var DashboardPageParser
+     */
+    private $dashboardPageParser;
+
+    /**
      *
      * @param HttpClient $httpClient
      * @param RequestFactoryInterface $requestFactory
-     * @param WelcomePageParser $welcomePageParser
      * @param StreamFactoryInterface $streamFactory
+     * @param WelcomePageParser $welcomePageParser
+     * @param DashboardPageParser $dashboardPageParser
      */
     public function __construct(
         HttpClient $httpClient,
         RequestFactoryInterface $requestFactory,
+        StreamFactoryInterface $streamFactory,
         WelcomePageParser $welcomePageParser,
-        StreamFactoryInterface $streamFactory
+        DashboardPageParser $dashboardPageParser
         //UriFactory $uriFactory
     ) {
         $this->requestFactory = $requestFactory;
@@ -70,7 +78,7 @@ class Client implements ClientInterface
         );
 
         $this->httpPluginClient = $pluginClient;
-
+        $this->dashboardPageParser = $dashboardPageParser;
     }
 
     /**
@@ -94,49 +102,71 @@ class Client implements ClientInterface
         list($tackId) = $this->getDataFromLoginPageResponse($loginPageResponse);
 
         $passwordPageResponse = $this->submitPassword($csrfToken, $tackId, $password);
-
-        $dashboardResponse = $this->getDashboardPage();
-
-        $dashboardPageData = $this->getDataFromDashboardPageResponse($dashboardResponse);
-
         //$request = $this->requestFactory->createRequest(HttpMethodInterface::POST, 'http://httplug.io', [], );
     }
 
-    private function getDataFromDashboardPageResponse(ResponseInterface $dashboardResponse)
-    {
-        $body = $dashboardResponse->getBody()->getContents();
-
-        return $this->getDataFromDashboardPage($body);
-    }
-
-    private function getDataFromDashboardPage(string $html)
-    {
-
-    }
-
-    private function getDataFromLoginPageResponse(ResponseInterface $response)
-    {
-        $body = $response->getBody()->getContents();
-
-        return $this->getDataFromLoginPage($body);
-    }
-
-    private function getDataFromLoginPage(string $json)
-    {
-        $data = json_decode($json, true);
-
-        return [$data['track_id']];
-    }
-
     /**
-     * @param ResponseInterface $passportPageResponse
-     * @param string $login
      * @return ResponseInterface
      * @throws Exception
      * @throws HttpClientException
      */
-    private function submitLoginByPassportPageResponse(ResponseInterface $passportPageResponse, string $login): ResponseInterface
+    private function getPassportPage()
     {
+        $response = $this->sendGetRequest('https://passport.yandex.ru/auth/welcome?retpath=https%3A%2F%2Ffleet.taxi.yandex.ru');
+        $this->validateResponse($response);
+
+        return $response;
+    }
+
+    /**
+     * @param $url
+     * @return ResponseInterface
+     * @throws HttpClientException
+     */
+    private function sendGetRequest($url) :ResponseInterface
+    {
+        $request = $this->createGetRequest($url);
+
+        return $this->sendRequest($request);
+    }
+
+    private function createGetRequest($uri, $headers = [], $body = null, $protocolVersion = '1.1'): RequestInterface
+    {
+        return $this->createRequest(HttpMethodInterface::GET, $uri);
+    }
+
+    /**
+     * @param $httpMethod
+     * @param $uri
+     * @return RequestInterface
+     */
+    private function createRequest($httpMethod, $uri) :RequestInterface
+    {
+        return $this->requestFactory->createRequest(
+            $httpMethod,
+            $uri
+        );
+    }
+
+    /**
+     * @param RequestInterface $request
+     * @return ResponseInterface
+     * @throws HttpClientException
+     */
+    private function sendRequest(RequestInterface $request) :ResponseInterface
+    {
+        return $this->httpPluginClient->sendRequest($request);
+    }
+
+    /**
+     * @param ResponseInterface $response
+     * @throws Exception
+     */
+    private function validateResponse(ResponseInterface $response)
+    {
+        if (($responseStatusCode = $response->getStatusCode()) !== 200) {
+            throw new Exception('Invalid response status code: ' . $responseStatusCode);
+        }
     }
 
     private function getDataFromPassportPageResponse(ResponseInterface $response)
@@ -180,6 +210,75 @@ class Client implements ClientInterface
     }
 
     /**
+     * @param string $uri
+     * @param array $postData
+     * @return ResponseInterface
+     * @throws HttpClientException
+     */
+    private function sendPostUrlEncodedRequest(string $uri, array $postData = [])
+    {
+        $headers = [
+            'Content-Type' => 'application/x-www-form-urlencoded',
+        ];
+
+        $body = http_build_query($postData);
+
+        $stream = $this->streamFactory->createStream($body);
+
+        return $this->sendPostRequest($uri, $stream, $headers);
+    }
+
+    /**
+     * @param $uri
+     * @param $body
+     * @param array $headers
+     * @return ResponseInterface
+     * @throws HttpClientException
+     */
+    private function sendPostRequest(string $uri, StreamInterface $body = null, $headers = [])
+    {
+        $request = $this->createPostRequest($uri, $headers, $body);
+
+        return $this->sendRequest($request);
+    }
+
+    private function createPostRequest($uri, $headers = [], StreamInterface $body = null) :RequestInterface
+    {
+        $request = $this->createRequest(HttpMethodInterface::POST, $uri);
+
+        if ($headers) {
+            $this->addHeaders($request, $headers);
+        }
+
+        if ($body) {
+            $request = $request->withBody($body);
+        }
+
+        return $request;
+    }
+
+    private function addHeaders(RequestInterface $request, array $headers)
+    {
+        foreach ($headers as $key => $value) {
+            $request->withHeader($key, $value);
+        }
+    }
+
+    private function getDataFromLoginPageResponse(ResponseInterface $response)
+    {
+        $body = $response->getBody()->getContents();
+
+        return $this->getDataFromLoginPage($body);
+    }
+
+    private function getDataFromLoginPage(string $json)
+    {
+        $data = json_decode($json, true);
+
+        return [$data['track_id']];
+    }
+
+    /**
      * @param string $csrfToken
      * @param string $trackId
      * @param string $password
@@ -220,53 +319,12 @@ class Client implements ClientInterface
         }
     }
 
-    /**
-     * @param string $uri
-     * @param array $postData
-     * @return ResponseInterface
-     * @throws HttpClientException
-     */
-    private function sendPostUrlEncodedRequest(string $uri, array $postData = [])
+    public function getDashboardPageData()
     {
-        $headers = [
-            'Content-Type' => 'application/x-www-form-urlencoded',
-        ];
+        $dashboardResponse = $this->getDashboardPage();
 
-        $body = http_build_query($postData);
-
-        $stream = $this->streamFactory->createStream($body);
-
-        return $this->sendPostRequest($uri, $stream, $headers);
+        return $this->getDataFromDashboardPageResponse($dashboardResponse);
     }
-
-    /**
-     * @param $uri
-     * @param $body
-     * @param array $headers
-     * @return ResponseInterface
-     * @throws HttpClientException
-     */
-    private function sendPostRequest(string $uri, StreamInterface $body = null, $headers = [])
-    {
-        $request = $this->createPostRequest($uri, $headers, $body);
-
-        return $this->sendRequest($request);
-    }
-
-
-    /**
-     * @return ResponseInterface
-     * @throws Exception
-     * @throws HttpClientException
-     */
-    private function getPassportPage()
-    {
-        $response = $this->sendGetRequest('https://passport.yandex.ru/auth/welcome?retpath=https%3A%2F%2Ffleet.taxi.yandex.ru');
-        $this->validateResponse($response);
-
-        return $response;
-    }
-
 
     /**
      * @return ResponseInterface
@@ -281,79 +339,17 @@ class Client implements ClientInterface
         return $response;
     }
 
-    /**
-     * @param ResponseInterface $response
-     * @throws Exception
-     */
-    private function validateResponse(ResponseInterface $response)
+    private function getDataFromDashboardPageResponse(ResponseInterface $dashboardResponse)
     {
-        if (($responseStatusCode = $response->getStatusCode()) !== 200) {
-            throw new Exception('Invalid response status code: ' . $responseStatusCode);
-        }
+        $body = $dashboardResponse->getBody()->getContents();
+
+        return $this->getDataFromDashboardPage($body);
     }
 
-    /**
-     * @param $url
-     * @return ResponseInterface
-     * @throws HttpClientException
-     */
-    private function sendGetRequest($url) :ResponseInterface
+    private function getDataFromDashboardPage(string $html)
     {
-        $request = $this->createGetRequest($url);
-
-        return $this->sendRequest($request);
+        return $this->dashboardPageParser->getData($html);
     }
-
-    /**
-     * @param RequestInterface $request
-     * @return ResponseInterface
-     * @throws HttpClientException
-     */
-    private function sendRequest(RequestInterface $request) :ResponseInterface
-    {
-        return $this->httpPluginClient->sendRequest($request);
-    }
-
-    private function createPostRequest($uri, $headers = [], StreamInterface $body = null) :RequestInterface
-    {
-        $request = $this->createRequest(HttpMethodInterface::POST, $uri);
-
-        if ($headers) {
-            $this->addHeaders($request, $headers);
-        }
-
-        if ($body) {
-            $request = $request->withBody($body);
-        }
-
-        return $request;
-    }
-
-    private function addHeaders(RequestInterface $request, array $headers)
-    {
-        foreach ($headers as $key => $value) {
-            $request->withHeader($key, $value);
-        }
-    }
-
-    private function createGetRequest($uri, $headers = [], $body = null, $protocolVersion = '1.1'): RequestInterface
-    {
-        return $this->createRequest(HttpMethodInterface::GET, $uri);
-    }
-
-    /**
-     * @param $httpMethod
-     * @param $uri
-     * @return RequestInterface
-     */
-    private function createRequest($httpMethod, $uri) :RequestInterface
-    {
-        return $this->requestFactory->createRequest(
-            $httpMethod,
-            $uri
-        );
-    }
-
 
     public function logout()
     {
@@ -363,5 +359,16 @@ class Client implements ClientInterface
     public function addDriverWithNewCar($driverWithNewCar)
     {
         // TODO: Implement addDriverWithNewCar() method.
+    }
+
+    /**
+     * @param ResponseInterface $passportPageResponse
+     * @param string $login
+     * @return ResponseInterface
+     * @throws Exception
+     * @throws HttpClientException
+     */
+    private function submitLoginByPassportPageResponse(ResponseInterface $passportPageResponse, string $login): ResponseInterface
+    {
     }
 }
