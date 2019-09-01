@@ -50,6 +50,11 @@ class Client implements ClientInterface
     private $dashboardPageParser;
 
     /**
+     * @var string
+     */
+    private $csrfToken;
+
+    /**
      *
      * @param HttpClient $httpClient
      * @param RequestFactoryInterface $requestFactory
@@ -74,7 +79,7 @@ class Client implements ClientInterface
 
         $pluginClient = new PluginClient(
             $httpClient,
-            [$cookiePlugin]
+            [$cookiePlugin],
         );
 
         $this->httpPluginClient = $pluginClient;
@@ -246,7 +251,7 @@ class Client implements ClientInterface
         $request = $this->createRequest(HttpMethodInterface::POST, $uri);
 
         if ($headers) {
-            $this->addHeaders($request, $headers);
+            $request = $this->addHeaders($request, $headers);
         }
 
         if ($body) {
@@ -256,11 +261,13 @@ class Client implements ClientInterface
         return $request;
     }
 
-    private function addHeaders(RequestInterface $request, array $headers)
+    private function addHeaders(RequestInterface $request, array $headers): RequestInterface
     {
         foreach ($headers as $key => $value) {
-            $request->withHeader($key, $value);
+            $request = $request->withHeader($key, $value);
         }
+
+        return $request;
     }
 
     private function getDataFromLoginPageResponse(ResponseInterface $response)
@@ -327,6 +334,7 @@ class Client implements ClientInterface
     {
         $dashboardResponse = $this->getDashboardPage();
 
+        $this->updateCsrfToken($dashboardResponse);
         return $this->getDataFromDashboardPageResponse($dashboardResponse);
     }
 
@@ -343,11 +351,26 @@ class Client implements ClientInterface
         return $response;
     }
 
+    private function updateCsrfToken(ResponseInterface $response)
+    {
+        $this->csrfToken = $this->getCsrfTokenByResponse($response);
+    }
+
+    private function getCsrfTokenByResponse(ResponseInterface $response)
+    {
+        return $response->getHeader('X-CSRF-TOKEN')[0];
+    }
+
     private function getDataFromDashboardPageResponse(ResponseInterface $dashboardResponse): array
     {
-        $body = $dashboardResponse->getBody()->getContents();
+        $body = $this->getResponseBodyText($dashboardResponse);
 
         return $this->getDataFromDashboardPage($body);
+    }
+
+    private function getResponseBodyText(ResponseInterface $response): string
+    {
+        return $response->getBody()->getContents();
     }
 
     private function getDataFromDashboardPage(string $html): array
@@ -382,6 +405,87 @@ class Client implements ClientInterface
         return $response;
     }
 
+    /**
+     * @param string $parkId
+     * @param int $limit
+     * @param int $page
+     * @param array $carAmenities
+     * @param array $carCategories
+     * @param null $status
+     * @param string $text
+     * @param int $workRuleId
+     * @param string $workStatusId
+     * @param array $sort
+     * @return array
+     * @throws Exception
+     * @throws HttpClientException
+     */
+    public function getDrivers(
+        string $parkId,
+        int $limit = 25,
+        int $page = 1,
+        array $carAmenities = [],
+        array $carCategories = [],
+        $status = null,
+        string $text = '',
+        int $workRuleId = null,
+        string $workStatusId = 'working',
+        array $sort = [
+            [
+                'direction' => "asc",
+                'field' => 'car.call_sign',
+            ]
+        ]
+    ):array {
+        $uri = 'https://fleet.taxi.yandex.ru/drivers/list';
+
+        $postData = [
+            'car_amenities' => $carAmenities,
+            'car_categories' => $carCategories,
+            'limit' => $limit,
+            'page' => $page,
+            'park_id' => $parkId,
+            'sort' => $sort,
+            'status' => $status,
+            'text' => $text,
+            'work_rule_id' => $workRuleId,
+            'work_status_id' => $workStatusId,
+        ];
+
+        $headers = [
+            'X-CSRF-TOKEN' => $this->csrfToken,
+        ];
+
+        $response =  $this->sendPostJsonEncodedRequest($uri, $postData, $headers);
+
+        $this->validateResponse($response);
+
+        $json = $response->getBody()->getContents();
+
+        return $this->jsonDecode($json);
+    }
+
+    /**
+     * @param string $uri
+     * @param array $postData
+     * @param array $headers
+     * @return ResponseInterface
+     * @throws HttpClientException
+     */
+    private function sendPostJsonEncodedRequest(string $uri, array $postData = [], $headers = [])
+    {
+        $headers['Content-Type'] = 'application/json;charset=UTF-8';
+
+        $body = json_encode($postData);
+        $stream = $this->streamFactory->createStream($body);
+
+        return $this->sendPostRequest($uri, $stream, $headers);
+    }
+
+    private function jsonDecode($json): array
+    {
+        return json_decode($json, true);
+    }
 
     public function logout()
     {

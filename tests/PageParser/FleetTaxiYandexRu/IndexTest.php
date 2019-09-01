@@ -7,10 +7,12 @@ use PHPUnit\Framework\TestCase;
 
 class IndexTest extends TestCase
 {
+    const PARK_ID = '8d40b7c41af544afa0499b9d0bdf2430';
+
     const EXPECTED_DATA_LANG_DEFAULT = [
         0 =>
             [
-                'id' => '8d40b7c41af544afa0499b9d0bdf2430',
+                'id' => self::PARK_ID,
                 'clid' => '400000110566',
                 'city' => 'Stavropol',
                 'city_original' => 'Ставрополь',
@@ -36,7 +38,7 @@ class IndexTest extends TestCase
     const EXPECTED_DATA_LANG_RUSSIAN = [
         0 =>
             [
-                'id' => '8d40b7c41af544afa0499b9d0bdf2430',
+                'id' => self::PARK_ID,
                 'clid' => '400000110566',
                 'city' => 'Ставрополь',
                 'city_original' => 'Ставрополь',

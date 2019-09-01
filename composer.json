@@ -21,6 +21,7 @@
     "ext-libxml": "*",
     "ext-dom": "*",
     "ext-json": "*",
+    "ext-curl": "*",
 
     "php-http/message": "^1.8",
     "php-http/curl-client": "^2.0",
