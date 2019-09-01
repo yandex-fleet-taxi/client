@@ -169,7 +169,17 @@ class Client implements ClientInterface
     private function validateResponse(ResponseInterface $response)
     {
         if (($responseStatusCode = $response->getStatusCode()) !== 200) {
-            throw new Exception('Invalid response status code: ' . $responseStatusCode);
+            $errorDescription = ($response->getHeader('Content-Type')[0] === 'application/json; charset=utf-8')
+                ? $errorDescription = $response->getBody()->getContents()
+                : null;
+
+            $errorMessage = 'Invalid response status code: ' . $responseStatusCode;
+
+            if ($errorDescription) {
+                $errorMessage .= ' Content: ' . $errorDescription;
+            }
+
+            throw new Exception($errorMessage);
         }
     }
 
@@ -486,6 +496,34 @@ class Client implements ClientInterface
     {
         return json_decode($json, true);
     }
+
+    /**
+     * @param string $parkId
+     * @param array $postData
+     * @return string Created driver id
+     * @throws Exception
+     * @throws HttpClientException
+     */
+    public function createDriver(string $parkId, array $postData): string
+    {
+        $uri = 'https://fleet.taxi.yandex.ru/api/v1/drivers/create';
+
+        $headers = [
+            'X-CSRF-TOKEN' => $this->csrfToken,
+            'X-Park-Id' => $parkId,
+        ];
+
+        $response =  $this->sendPostJsonEncodedRequest($uri, $postData, $headers);
+
+        $this->validateResponse($response);
+
+        $json = $response->getBody()->getContents();
+
+        $data = $this->jsonDecode($json);
+
+        return $data['id'];
+    }
+
 
     public function logout()
     {

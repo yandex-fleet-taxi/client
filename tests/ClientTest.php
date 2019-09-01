@@ -104,4 +104,80 @@ final class ClientTest extends TestCase
 
         return json_decode($json, true);
     }
+
+    /**
+     * @param Client $client
+     * @depends testChangeLocale
+     * @doesNotPerformAssertions
+     */
+    public function testCreateDriver(Client $client)
+    {
+        $parkId = IndexTest::PARK_ID;
+
+        $driverPostData = [
+            'accounts' =>
+                [
+                    'balance_limit' => '5',
+                ],
+            'driver_profile' =>
+                [
+                    'driver_license' =>
+                        [
+                            'country' => 'rus',
+                            'number' => $this->generateDriverLicenceNumber(),
+                            'expiration_date' => '2019-09-20',
+                            'issue_date' => '2019-09-01',
+                            'birth_date' => NULL,
+                        ],
+                    'first_name' => 'Валерий',
+                    'last_name' => 'Иващенко',
+                    'middle_name' => 'Игроевич',
+                    'phones' =>
+                        [
+                            0 => $this->generatePhoneNumber(),
+                        ],
+                    'work_status' => 'working',
+                    'work_rule_id' => 'a6cb3fbe61a54ba28f8f8b5e35b286db',
+                    'providers' =>
+                        [
+                            0 => 'yandex',
+                        ],
+                    'hire_date' => '2019-09-01',
+                    'deaf' => NULL,
+                    'email' => NULL,
+                    'address' => NULL,
+                    'comment' => NULL,
+                    'check_message' => NULL,
+                    'car_id' => NULL,
+                    'fire_date' => NULL,
+                ],
+        ];
+
+        $driversListData = $client->createDriver($parkId, $driverPostData);
+        //$expectedDriversListData = $this->getExpectedDriversListData();
+        //$this->assertEquals($expectedDriversListData, $driversListData);
+    }
+
+    private function generateDriverLicenceNumber()
+    {
+        return $this->generateNumbersString(10);
+    }
+
+    private function generateNumbersString($size)
+    {
+        $ret = '';
+
+        for ($i=0; $i<$size; $i++) {
+            $ret .= rand(0, 9);
+        }
+
+        return $ret;
+    }
+
+    private function generatePhoneNumber()
+    {
+        $numbers = $this->generateNumbersString(12);
+
+        return '+'.$numbers;
+    }
 }
