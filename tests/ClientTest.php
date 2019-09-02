@@ -17,6 +17,8 @@ use PHPUnit\Framework\TestCase;
 final class ClientTest extends TestCase
 {
     const BRAND_NAME = 'Alfa Romeo';
+    const DRIVER_ID = 'cfa844ddca5e0290dc282086ade844d8';
+    const CAR_ID = 'f9430230414bf8257e3355e8c2985c5f';
 
     /**
      * @return Client
@@ -117,13 +119,6 @@ final class ClientTest extends TestCase
         $this->assertArrayHasKey('show', $driversListData);
     }
 
-    private function getExpectedDriversListData()
-    {
-        $json = file_get_contents(__DIR__ . '/Textures/Pages/fleet.taxi.yandex.ru/drivers/list.json');
-
-        return json_decode($json, true);
-    }
-
     /**
      * @param Client $client
      * @throws ClientException
@@ -179,6 +174,8 @@ final class ClientTest extends TestCase
 
     /**
      * @param Client $client
+     * @throws ClientException
+     * @throws HttpClientException
      * @depends testChangeLocale
      */
     public function testGetVehiclesCardData(Client $client)
@@ -205,6 +202,8 @@ final class ClientTest extends TestCase
 
     /**
      * @param Client $client
+     * @throws ClientException
+     * @throws HttpClientException
      * @depends testChangeLocale
      */
     public function testStoreVehicles(Client $client)
@@ -272,13 +271,27 @@ final class ClientTest extends TestCase
         $this->validateJsonResponseData($data);
     }
 
+    /**
+     * @param Client $client
+     * @throws ClientException
+     * @throws HttpClientException
+     * @depends testChangeLocale
+     */
+    public function testBindDriverWithCar(Client $client)
+    {
+        $parkId = IndexTest::PARK_ID;
+        $driverId = self::DRIVER_ID;
+        $carId = self::CAR_ID;
+        $data = $client->bindDriverWithCar($parkId, $driverId, $carId);
+        $this->assertIsArray($data);
+        $this->assertEquals('success' ,$data['status']);
+    }
+
     private function validateJsonResponseData(array $data)
     {
         $this->assertEquals(200, $data['status']);
         $this->assertTrue($data['success']);
     }
-
-
 
     private function generateDriverLicenceNumber()
     {

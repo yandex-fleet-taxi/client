@@ -134,11 +134,6 @@ class Client implements ClientInterface
         return $this->sendRequest($request);
     }
 
-    private function createGetRequest($uri): RequestInterface
-    {
-        return $this->createRequest(HttpMethodInterface::GET, $uri);
-    }
-
     /**
      * @param $httpMethod
      * @param $uri
@@ -256,10 +251,29 @@ class Client implements ClientInterface
         return $this->sendRequest($request);
     }
 
+    /**
+     * @param $uri
+     * @param $body
+     * @param array $headers
+     * @return ResponseInterface
+     * @throws HttpClientException
+     */
+    private function sendPutRequest(string $uri, StreamInterface $body = null, $headers = [])
+    {
+        $request = $this->createPutRequest($uri, $headers, $body);
+
+        return $this->sendRequest($request);
+    }
+
     private function createPostRequest($uri, $headers = [], StreamInterface $body = null) :RequestInterface
     {
         $request = $this->createRequest(HttpMethodInterface::POST, $uri);
 
+        return $this->modifyRequestByHeadersAndBody($request, $headers, $body);
+    }
+
+    private function modifyRequestByHeadersAndBody(RequestInterface $request, $headers = [], StreamInterface $body = null)
+    {
         if ($headers) {
             $request = $this->addHeaders($request, $headers);
         }
@@ -269,6 +283,19 @@ class Client implements ClientInterface
         }
 
         return $request;
+    }
+
+    private function createPutRequest($uri, $headers = [], StreamInterface $body = null) :RequestInterface
+    {
+        $request = $this->createRequest(HttpMethodInterface::PUT, $uri);
+
+        return $this->modifyRequestByHeadersAndBody($request, $headers, $body);
+    }
+
+    private function createGetRequest($uri, $headers = [], StreamInterface $body = null): RequestInterface
+    {
+        $request = $this->createRequest(HttpMethodInterface::GET, $uri);
+        return $this->modifyRequestByHeadersAndBody($request, $headers, $body);
     }
 
     private function addHeaders(RequestInterface $request, array $headers): RequestInterface
@@ -492,6 +519,23 @@ class Client implements ClientInterface
         return $this->sendPostRequest($uri, $stream, $headers);
     }
 
+    /**
+     * @param string $uri
+     * @param array $postData
+     * @param array $headers
+     * @return ResponseInterface
+     * @throws HttpClientException
+     */
+    private function sendPutJsonEncodedRequest(string $uri, array $postData = [], $headers = [])
+    {
+        $headers['Content-Type'] = 'application/json;charset=UTF-8';
+
+        $body = json_encode($postData);
+        $stream = $this->streamFactory->createStream($body);
+
+        return $this->sendPutRequest($uri, $stream, $headers);
+    }
+
     private function jsonDecode($json): array
     {
         return json_decode($json, true);
@@ -524,6 +568,12 @@ class Client implements ClientInterface
         return $data['id'];
     }
 
+    /**
+     * @param string $parkId
+     * @return array
+     * @throws Exception
+     * @throws HttpClientException
+     */
     public function getVehiclesCardData(string $parkId)
     {
         $uri = 'https://fleet.taxi.yandex.ru/vehicles/card/data';
@@ -589,6 +639,36 @@ class Client implements ClientInterface
         $response =  $this->sendPostJsonEncodedRequest($uri, $postData, $headers);
         $this->validateResponse($response);
         $this->updateCsrfToken($response);
+
+        $json = $response->getBody()->getContents();
+
+        return $this->jsonDecode($json);
+    }
+
+    /**
+     * @param string $parkId
+     * @param string $driverId
+     * @param string $carId
+     * @return array
+     * @throws Exception
+     * @throws HttpClientException
+     */
+    public function bindDriverWithCar(string $parkId, string $driverId, string $carId)
+    {
+        $uri = 'https://fleet.taxi.yandex.ru/api/v1/drivers/car-bindings';
+
+        $headers = [
+            'X-CSRF-TOKEN' => $this->csrfToken,
+            'X-Park-Id' => $parkId,
+        ];
+
+        $postData = [
+            'driver_id' => $driverId,
+            'car_id' => $carId,
+        ];
+
+        $response =  $this->sendPutJsonEncodedRequest($uri, $postData, $headers);
+        $this->validateResponse($response);
 
         $json = $response->getBody()->getContents();
 
