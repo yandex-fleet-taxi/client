@@ -191,12 +191,83 @@ final class ClientTest extends TestCase
 
     /**
      * @param Client $client
+     * @throws ClientException
+     * @throws HttpClientException
      * @depends testChangeLocale
      */
     public function testGetVehiclesCardModels(Client $client)
     {
         $brandName = self::BRAND_NAME;
         $data = $client->getVehiclesCardModels($brandName);
+        $this->assertIsArray($data);
+        $this->validateJsonResponseData($data);
+    }
+
+    /**
+     * @param Client $client
+     * @depends testChangeLocale
+     */
+    public function testStoreVehicles(Client $client)
+    {
+        $vehiclePostData = [
+            'status' => 'working',
+            'brand' => 'Alfa Romeo',
+            'model' => '105/115',
+            'color' => 'Белый',
+            'year' => 1996,
+            'number' => '1111112',
+            'callsign' => 'тест',
+            'vin' => '1C3EL46U91N594161',
+            'registration_cert' => '1111111',
+            'booster_count' => 2,
+            'categories' =>
+                [
+                    0 => 'minivan',
+                ],
+            'carrier_permit_owner_id' => NULL,
+            'transmission' => 'unknown',
+            'rental' => false,
+            'chairs' =>
+                [
+                    0 =>
+                        [
+                            'brand' => 'Еду-еду',
+                            'categories' =>
+                                [
+                                    0 => 'Category2',
+                                ],
+                            'isofix' => true,
+                        ],
+                ],
+            'permit' => '777777',
+            'tariffs' =>
+                [
+                    0 => 'Эконом',
+                ],
+            'cargo_loaders' => 1,
+            'carrying_capacity' => 300,
+            'chassis' => '234',
+            'park_id' => '8d40b7c41af544afa0499b9d0bdf2430',
+            'amenities' =>
+                [
+                    0 => 'conditioner',
+                    1 => 'child_seat',
+                    2 => 'delivery',
+                    3 => 'smoking',
+                    4 => 'woman_driver',
+                    5 => 'sticker',
+                    6 => 'charge',
+                ],
+            'cargo_hold_dimensions' =>
+                [
+                    'length' => 150,
+                    'width' => 100,
+                    'height' => 50,
+                ],
+            'log_time' => 350,
+        ];
+
+        $data = $client->storeVehicles($vehiclePostData);
         $this->assertIsArray($data);
         $this->validateJsonResponseData($data);
     }
