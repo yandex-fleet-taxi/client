@@ -89,11 +89,10 @@ class Client implements ClientInterface
     /**
      * @param string $login
      * @param string $password
-     * @param bool $rememberMe
      * @throws Exception
      * @throws HttpClientException
      */
-    public function login(string $login, string $password, bool $rememberMe = false)
+    public function login(string $login, string $password)
     {
         $passportPageResponse = $this->getPassportPage();
 
@@ -673,16 +672,5 @@ class Client implements ClientInterface
         $json = $response->getBody()->getContents();
 
         return $this->jsonDecode($json);
-    }
-
-
-    public function logout()
-    {
-        // TODO: Implement logout() method.
-    }
-
-    public function addDriverWithNewCar($driverWithNewCar)
-    {
-        // TODO: Implement addDriverWithNewCar() method.
     }
 }
