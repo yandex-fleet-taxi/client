@@ -524,6 +524,27 @@ class Client implements ClientInterface
         return $data['id'];
     }
 
+    public function getVehiclesCardData(string $parkId)
+    {
+        $uri = 'https://fleet.taxi.yandex.ru/vehicles/card/data';
+
+        $headers = [
+            'X-CSRF-TOKEN' => $this->csrfToken,
+        ];
+
+        $postData = [
+            'park_id' => $parkId,
+        ];
+
+        $response =  $this->sendPostJsonEncodedRequest($uri, $postData, $headers);
+        $this->validateResponse($response);
+        $this->updateCsrfToken($response);
+
+        $json = $response->getBody()->getContents();
+
+        return $this->jsonDecode($json);
+    }
+
 
     public function logout()
     {

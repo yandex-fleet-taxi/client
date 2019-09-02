@@ -93,9 +93,26 @@ final class ClientTest extends TestCase
     {
         $parkId = IndexTest::PARK_ID;
         $driversListData = $client->getDrivers($parkId);
-        $expectedDriversListData = $this->getExpectedDriversListData();
+        //$expectedDriversListData = $this->getExpectedDriversListData();
 
-        $this->assertEquals($expectedDriversListData, $driversListData);
+
+        $this->assertArrayHasKey('status', $driversListData);
+        $this->assertEquals(200, $driversListData['status']);
+
+        $this->assertArrayHasKey('success', $driversListData);
+        $this->assertTrue($driversListData['success']);
+
+        $this->assertArrayHasKey('data', $driversListData);
+        $this->assertIsArray($driversListData['data']);
+        $data = $driversListData['data'];
+        $this->assertArrayHasKey('driver_profiles', $data);
+        $this->assertArrayHasKey('aggregate', $data);
+
+        $this->assertArrayHasKey('total', $driversListData);
+        $this->assertIsInt($driversListData['total']);
+
+        $this->assertArrayHasKey('link_drivers_and_orders', $driversListData);
+        $this->assertArrayHasKey('show', $driversListData);
     }
 
     private function getExpectedDriversListData()
@@ -107,6 +124,8 @@ final class ClientTest extends TestCase
 
     /**
      * @param Client $client
+     * @throws ClientException
+     * @throws HttpClientException
      * @depends testChangeLocale
      * @doesNotPerformAssertions
      */
@@ -153,9 +172,23 @@ final class ClientTest extends TestCase
                 ],
         ];
 
-        $driversListData = $client->createDriver($parkId, $driverPostData);
-        //$expectedDriversListData = $this->getExpectedDriversListData();
-        //$this->assertEquals($expectedDriversListData, $driversListData);
+        $driverId = $client->createDriver($parkId, $driverPostData);
+        $this->assertIsString($driverId);
+    }
+
+
+    /**
+     * @param Client $client
+     * @depends testChangeLocale
+     * @doesNotPerformAssertions
+     */
+    public function testGetVehiclesCardData(Client $client)
+    {
+        $parkId = IndexTest::PARK_ID;
+        $data = $client->getVehiclesCardData($parkId);
+        $this->assertIsArray($data);
+        $this->assertEquals(200, $data['status']);
+        $this->assertTrue($data['success']);
     }
 
     private function generateDriverLicenceNumber()
