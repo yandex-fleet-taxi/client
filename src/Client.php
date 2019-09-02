@@ -545,6 +545,27 @@ class Client implements ClientInterface
         return $this->jsonDecode($json);
     }
 
+    public function getVehiclesCardModels($brandName)
+    {
+        $uri = 'https://fleet.taxi.yandex.ru/vehicles/card/models';
+
+        $headers = [
+            'X-CSRF-TOKEN' => $this->csrfToken,
+        ];
+
+        $postData = [
+            'brand_name' => $brandName,
+        ];
+
+        $response =  $this->sendPostJsonEncodedRequest($uri, $postData, $headers);
+        $this->validateResponse($response);
+        $this->updateCsrfToken($response);
+
+        $json = $response->getBody()->getContents();
+
+        return $this->jsonDecode($json);
+    }
+
 
     public function logout()
     {

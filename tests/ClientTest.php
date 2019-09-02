@@ -16,6 +16,8 @@ use PHPUnit\Framework\TestCase;
 
 final class ClientTest extends TestCase
 {
+    const BRAND_NAME = 'Alfa Romeo';
+
     /**
      * @return Client
      * @throws ClientException
@@ -127,7 +129,6 @@ final class ClientTest extends TestCase
      * @throws ClientException
      * @throws HttpClientException
      * @depends testChangeLocale
-     * @doesNotPerformAssertions
      */
     public function testCreateDriver(Client $client)
     {
@@ -176,20 +177,37 @@ final class ClientTest extends TestCase
         $this->assertIsString($driverId);
     }
 
-
     /**
      * @param Client $client
      * @depends testChangeLocale
-     * @doesNotPerformAssertions
      */
     public function testGetVehiclesCardData(Client $client)
     {
         $parkId = IndexTest::PARK_ID;
         $data = $client->getVehiclesCardData($parkId);
         $this->assertIsArray($data);
+        $this->validateJsonResponseData($data);
+    }
+
+    /**
+     * @param Client $client
+     * @depends testChangeLocale
+     */
+    public function testGetVehiclesCardModels(Client $client)
+    {
+        $brandName = self::BRAND_NAME;
+        $data = $client->getVehiclesCardModels($brandName);
+        $this->assertIsArray($data);
+        $this->validateJsonResponseData($data);
+    }
+
+    private function validateJsonResponseData(array $data)
+    {
         $this->assertEquals(200, $data['status']);
         $this->assertTrue($data['success']);
     }
+
+
 
     private function generateDriverLicenceNumber()
     {
