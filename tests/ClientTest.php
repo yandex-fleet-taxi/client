@@ -7,7 +7,7 @@ use Http\Client\Curl\Client as CurlClient;
 use Http\Client\Exception as HttpClientException;
 use Http\Discovery\Psr17FactoryDiscovery;
 use Likemusic\YandexFleetTaxiClient\Client;
-use Likemusic\YandexFleetTaxiClient\Contracts\LocaleInterface;
+use Likemusic\YandexFleetTaxiClient\Contracts\LanguageInterface;
 use Likemusic\YandexFleetTaxiClient\Exception as ClientException;
 use Likemusic\YandexFleetTaxiClient\PageParser\FleetTaxiYandexRu\Index as DashboardPageParser;
 use Likemusic\YandexFleetTaxiClient\PageParser\PassportYandexRu\Auth\Welcome as WelcomePageParser;
@@ -81,7 +81,7 @@ final class ClientTest extends TestCase
      */
     public function testChangeLocale(Client $client): Client
     {
-        $dashboardPageData = $client->changeLanguage(LocaleInterface::RUSSIAN);
+        $dashboardPageData = $client->changeLanguage(LanguageInterface::RUSSIAN);
         $this->assertEquals(IndexTest::EXPECTED_DATA_LANG_RUSSIAN, $dashboardPageData);
 
         return $client;

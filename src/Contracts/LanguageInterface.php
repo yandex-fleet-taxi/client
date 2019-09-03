@@ -2,8 +2,7 @@
 
 namespace Likemusic\YandexFleetTaxiClient\Contracts;
 
-
-interface LocaleInterface
+interface LanguageInterface
 {
     const ENGLISH = 'en';
     const RUSSIAN = 'ru';
