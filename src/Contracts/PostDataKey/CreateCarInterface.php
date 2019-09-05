@@ -5,6 +5,7 @@ namespace Likemusic\YandexFleetTaxiClient\Contracts\PostDataKey;
 interface CreateCarInterface
 {
     const AMENITIES='amenities';
+    const BODY_NUMBER='body_number';
     const BOOSTER_COUNT='booster_count';
     const BRAND='brand';
     const CALLSIGN='callsign';
