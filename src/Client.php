@@ -103,7 +103,8 @@ class Client implements ClientInterface
         $retPath = 'https://fleet.taxi.yandex.ru';
 
         $loginPageResponse = $this->submitLogin($login, $csrfToken, $processUuid, $retPath);
-        list($tackId) = $this->getDataFromLoginPageResponse($loginPageResponse);
+        list($tackId, $csrfToken) = $this->getDataFromLoginPageResponse($loginPageResponse);
+        $this->csrfToken = $csrfToken;
 
         $this->submitPassword($csrfToken, $tackId, $password);
     }
@@ -317,7 +318,7 @@ class Client implements ClientInterface
     {
         $data = json_decode($json, true);
 
-        return [$data['track_id']];
+        return [$data['track_id'], $data['csrf_token']];
     }
 
     /**
