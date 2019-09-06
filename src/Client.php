@@ -103,8 +103,8 @@ class Client implements ClientInterface
         $retPath = 'https://fleet.taxi.yandex.ru';
 
         $loginPageResponse = $this->submitLogin($login, $csrfToken, $processUuid, $retPath);
-        list($tackId, $csrfToken) = $this->getDataFromLoginPageResponse($loginPageResponse);
-        $this->csrfToken = $csrfToken;
+        list($tackId, $newCsrfToken) = $this->getDataFromLoginPageResponse($loginPageResponse);
+        $this->csrfToken = $newCsrfToken;
 
         $this->submitPassword($csrfToken, $tackId, $password);
     }
