@@ -20,4 +20,10 @@ interface DriverProfileInterface
     const PROVIDERS = 'providers';
     const WORK_RULE_ID = 'work_rule_id';
     const WORK_STATUS = 'work_status';
+
+    const BANK_ACCOUNTS = 'bank_accounts';
+    const EMERGENCY_PERSON_CONTACTS = 'emergency_person_contacts';
+    const IDENTIFICATIONS = 'identifications';
+    const PRIMARY_STATE_REGISTRATION_NUMBER = 'primary_state_registration_number';
+    const TAX_IDENTIFICATION_NUMBER = 'tax_identification_number';
 }

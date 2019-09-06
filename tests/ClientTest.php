@@ -151,7 +151,7 @@ final class ClientTest extends TestCase
                         [
                             0 => $this->generatePhoneNumber(),
                         ],
-                    'work_status' => 'working',
+//                    'work_status' => 'working',
                     'work_rule_id' => 'a6cb3fbe61a54ba28f8f8b5e35b286db',
                     'providers' =>
                         [
@@ -165,6 +165,12 @@ final class ClientTest extends TestCase
                     'check_message' => NULL,
                     'car_id' => NULL,
                     'fire_date' => NULL,
+
+                    'bank_accounts' => [],
+                    'emergency_person_contacts' => [],
+                    'identifications' => [],
+                    'primary_state_registration_number' => null,
+                    'tax_identification_number' => null,
                 ],
         ];
 

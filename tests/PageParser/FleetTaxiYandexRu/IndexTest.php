@@ -13,7 +13,7 @@ class IndexTest extends TestCase
         0 =>
             [
                 'id' => self::PARK_ID,
-                'clid' => '400000110566',
+                'clid' => '400000117304',
                 'city' => 'Stavropol',
                 'city_original' => 'Ставрополь',
                 'country_id' => 'rus',
@@ -39,7 +39,7 @@ class IndexTest extends TestCase
         0 =>
             [
                 'id' => self::PARK_ID,
-                'clid' => '400000110566',
+                'clid' => '400000117304',
                 'city' => 'Ставрополь',
                 'city_original' => 'Ставрополь',
                 'country_id' => 'rus',
