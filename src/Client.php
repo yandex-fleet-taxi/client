@@ -104,7 +104,7 @@ class Client implements ClientInterface
 
         $loginPageResponse = $this->submitLogin($login, $csrfToken, $processUuid, $retPath);
         list($tackId, $newCsrfToken) = $this->getDataFromLoginPageResponse($loginPageResponse);
-        $this->csrfToken = $newCsrfToken;
+        $this->csrfToken = $csrfToken;
 
         $this->submitPassword($csrfToken, $tackId, $password);
     }
