@@ -2,7 +2,7 @@ version: '3.3'
 
 services:
   composer:
-    image: composer:1.8
+    build: ./docker/composer
     volumes:
       - .:/app
 
