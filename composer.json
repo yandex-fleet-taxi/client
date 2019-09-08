@@ -26,8 +26,6 @@
     "php-http/message": "^1.8",
     "php-http/curl-client": "^2.0",
     "guzzlehttp/psr7": "^1.6",
-    "puli/composer-plugin": "^1.0@beta",
-    "puli/cli": "^1.0@beta",
     "http-interop/http-factory-guzzle": "^1.0",
     "php-http/client-common": "^2.0"
   },

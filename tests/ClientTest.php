@@ -28,7 +28,6 @@ final class ClientTest extends TestCase
      */
     public function testLogin()
     {
-//        $httpClient = HttpClientDiscovery::find();
         $options = [
             CURLOPT_PROXY => 'host.docker.internal:8888',
             CURLOPT_SSL_VERIFYHOST => 0,
