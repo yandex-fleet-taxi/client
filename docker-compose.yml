@@ -5,6 +5,8 @@ services:
     build: ./docker/composer
     volumes:
       - .:/app
+    environment:
+      - COMPOSER_AUTH=${COMPOSER_AUTH}
 
   tests:
     build: ./docker/tests

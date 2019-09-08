@@ -18,9 +18,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
 
-//use Http\Message\RequestFactory;
-//use Http\Message\UriFactory;
-
 class Client implements ClientInterface
 {
     /**

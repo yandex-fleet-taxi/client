@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0434fdc6d8737df51cd0e3b5ea3e2f10",
+    "content-hash": "6986939a1d1bed8176a02bd6416c5cca",
     "packages": [
         {
             "name": "clue/stream-filter",
@@ -178,6 +178,45 @@
                 "psr-7"
             ],
             "time": "2018-07-31T19:32:56+00:00"
+        },
+        {
+            "name": "likemusic/yandex-fleet-taxi-client-contracts",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:likemusic/yandex-fleet-taxi-client-contracts.git",
+                "reference": "ec60ed8e895001cbc79d20a3d79144f6da84357c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/likemusic/yandex-fleet-taxi-client-contracts/zipball/ec60ed8e895001cbc79d20a3d79144f6da84357c",
+                "reference": "ec60ed8e895001cbc79d20a3d79144f6da84357c",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Likemusic\\YandexFleetTaxiClient\\Contracts\\": "src/Contracts"
+                }
+            },
+            "license": [
+                "proprietary"
+            ],
+            "authors": [
+                {
+                    "name": "Valerij Ivashchenko",
+                    "email": "likemusicdev@gmail.com"
+                }
+            ],
+            "description": "Contracts for client for https://fleet.taxi.yandex.ru/",
+            "support": {
+                "source": "https://github.com/likemusic/yandex-fleet-taxi-client-contracts/tree/master",
+                "issues": "https://github.com/likemusic/yandex-fleet-taxi-client-contracts/issues"
+            },
+            "time": "2019-09-08T21:59:48+00:00"
         },
         {
             "name": "php-http/client-common",
