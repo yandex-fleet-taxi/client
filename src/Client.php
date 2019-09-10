@@ -20,6 +20,8 @@ use Psr\Http\Message\StreamInterface;
 
 class Client implements ClientInterface
 {
+    const CONTENT_TYPE_JSON = 'application/json; charset=utf-8';
+
     /**
      * @var HttpClient
      */
@@ -161,18 +163,32 @@ class Client implements ClientInterface
     private function validateResponse(ResponseInterface $response)
     {
         if (($responseStatusCode = $response->getStatusCode()) !== 200) {
-            $errorDescription = ($response->getHeader('Content-Type')[0] === 'application/json; charset=utf-8')
-                ? $errorDescription = $response->getBody()->getContents()
-                : null;
+            $isJson = $this->isJsonResponse($response);
 
-            $errorMessage = 'Invalid response status code: ' . $responseStatusCode;
-
-            if ($errorDescription) {
-                $errorMessage .= ' Content: ' . $errorDescription;
+            if ($isJson) {
+                $responseContent = $this->getResponseBodyText($response);
+                $responseArray = $this->jsonDecode($responseContent);
+                $errorCode = $responseArray['code'];
+                $errorMessage = $responseArray['message'];
+            } else {
+                $errorCode = $responseStatusCode;
+                $errorMessage = $response->getReasonPhrase();
             }
 
-            throw new Exception($errorMessage);
+            throw new Exception($errorMessage, $errorCode);
         }
+    }
+
+    private function isJsonResponse(ResponseInterface $response)
+    {
+        $contentType = $this->getResponseContentType($response);
+
+        return $contentType == self::CONTENT_TYPE_JSON;
+    }
+
+    private function getResponseContentType(ResponseInterface $response)
+    {
+        return $response->getHeader('Content-Type')[0];
     }
 
     private function getDataFromPassportPageResponse(ResponseInterface $response)
