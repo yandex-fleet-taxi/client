@@ -25,4 +25,19 @@ class HttpJsonResponseException extends HttpResponseException
         $this->jsonMessage = $jsonMessage;
         $this->jsonDetails = $jsonDetails;
     }
+
+    public function getJsonCode()
+    {
+        return $this->jsonCode;
+    }
+
+    public function getJsonMessage()
+    {
+        return $this->jsonMessage;
+    }
+
+    public function getJsonDetails()
+    {
+        return $this->jsonDetails;
+    }
 }
