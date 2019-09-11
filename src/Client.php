@@ -191,7 +191,7 @@ class Client implements ClientInterface
                 $responseArray = $this->jsonDecode($errorMessage);
                 $responseCode = $responseArray['code'];
                 $responseMessage = $responseArray['message'];
-                $responseDetails = $responseArray['details'];
+                $responseDetails = isset($responseArray['details']) ? $responseArray['details'] : null;
 
                 throw new HttpJsonResponseException($errorMessage, $errorCode, $errorReasonPhrase, $responseCode, $responseMessage, $responseDetails);
             } else {
