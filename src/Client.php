@@ -68,7 +68,8 @@ class Client implements ClientInterface
         WelcomePageParser $welcomePageParser,
         DashboardPageParser $dashboardPageParser
         //UriFactory $uriFactory
-    ) {
+    )
+    {
         $this->requestFactory = $requestFactory;
         $this->streamFactory = $streamFactory;
         //$this->uriFactory = $uriFactory;
@@ -79,7 +80,7 @@ class Client implements ClientInterface
         $pluginClient = new PluginClient(
             $httpClient,
             [$cookiePlugin],
-        );
+            );
 
         $this->httpPluginClient = $pluginClient;
         $this->dashboardPageParser = $dashboardPageParser;
@@ -115,22 +116,22 @@ class Client implements ClientInterface
      */
     private function getPassportPage()
     {
-        $response = $this->sendGetRequest('https://passport.yandex.ru/auth/welcome?retpath=https%3A%2F%2Ffleet.taxi.yandex.ru');
-        $this->validateResponse($response);
-
-        return $response;
+        $url = 'https://passport.yandex.ru/auth/welcome?retpath=https%3A%2F%2Ffleet.taxi.yandex.ru';
+        return $this->sendGetRequestAndValidateResponse($url);
     }
 
     /**
-     * @param $url
+     * @param string $url
      * @return ResponseInterface
      * @throws HttpClientException
+     * @throws HttpJsonResponseException
+     * @throws HttpResponseException
      */
-    private function sendGetRequest($url) :ResponseInterface
+    private function sendGetRequestAndValidateResponse(string $url): ResponseInterface
     {
         $request = $this->createGetRequest($url);
 
-        return $this->sendRequest($request);
+        return $this->sendRequestAndValidateResponse($request);
     }
 
     /**
@@ -138,7 +139,7 @@ class Client implements ClientInterface
      * @param $uri
      * @return RequestInterface
      */
-    private function createRequest($httpMethod, $uri) :RequestInterface
+    private function createRequest($httpMethod, $uri): RequestInterface
     {
         return $this->requestFactory->createRequest(
             $httpMethod,
@@ -151,16 +152,33 @@ class Client implements ClientInterface
      * @return ResponseInterface
      * @throws HttpClientException
      */
-    private function sendRequest(RequestInterface $request) :ResponseInterface
+    private function sendRequest(RequestInterface $request): ResponseInterface
     {
         return $this->httpPluginClient->sendRequest($request);
     }
 
     /**
-     * @param ResponseInterface $response
-     * @throws Exception
+     * @param RequestInterface $request
+     * @return ResponseInterface
+     * @throws HttpClientException
+     * @throws HttpJsonResponseException
+     * @throws HttpResponseException
      */
-    private function validateResponse(ResponseInterface $response)
+    private function sendRequestAndValidateResponse(RequestInterface $request): ResponseInterface
+    {
+        $response = $this->httpPluginClient->sendRequest($request);
+        $this->validateResponse($response, $request);
+
+        return $response;
+    }
+
+    /**
+     * @param ResponseInterface $response
+     * @param RequestInterface|null $request
+     * @throws HttpJsonResponseException
+     * @throws HttpResponseException
+     */
+    private function validateResponse(ResponseInterface $response, RequestInterface $request = null)
     {
         if (($responseStatusCode = $response->getStatusCode()) !== 200) {
             $errorCode = $responseStatusCode;
@@ -173,7 +191,7 @@ class Client implements ClientInterface
                 $responseArray = $this->jsonDecode($errorMessage);
                 $responseCode = $responseArray['code'];
                 $responseMessage = $responseArray['message'];
-                $responseDetails =  $responseArray['details'];
+                $responseDetails = $responseArray['details'];
 
                 throw new HttpJsonResponseException($errorMessage, $errorCode, $errorReasonPhrase, $responseCode, $responseMessage, $responseDetails);
             } else {
@@ -227,11 +245,7 @@ class Client implements ClientInterface
             'retpath' => $retPath,
         ];
 
-        $response =  $this->sendPostUrlEncodedRequest($uri, $postData);
-
-        $this->validateResponse($response);
-
-        return $response;
+        return $this->sendPostUrlEncodedRequestAndValidateResponse($uri, $postData);
     }
 
     /**
@@ -239,8 +253,10 @@ class Client implements ClientInterface
      * @param array $postData
      * @return ResponseInterface
      * @throws HttpClientException
+     * @throws HttpJsonResponseException
+     * @throws HttpResponseException
      */
-    private function sendPostUrlEncodedRequest(string $uri, array $postData = [])
+    private function sendPostUrlEncodedRequestAndValidateResponse(string $uri, array $postData = [])
     {
         $headers = [
             'Content-Type' => 'application/x-www-form-urlencoded',
@@ -250,38 +266,42 @@ class Client implements ClientInterface
 
         $stream = $this->streamFactory->createStream($body);
 
-        return $this->sendPostRequest($uri, $stream, $headers);
+        return $this->sendPostRequestAndValidateResponse($uri, $stream, $headers);
     }
 
     /**
-     * @param $uri
-     * @param $body
+     * @param string $uri
+     * @param StreamInterface $body
      * @param array $headers
      * @return ResponseInterface
      * @throws HttpClientException
+     * @throws HttpJsonResponseException
+     * @throws HttpResponseException
      */
-    private function sendPostRequest(string $uri, StreamInterface $body = null, $headers = [])
+    private function sendPostRequestAndValidateResponse(string $uri, StreamInterface $body = null, $headers = [])
     {
         $request = $this->createPostRequest($uri, $headers, $body);
 
-        return $this->sendRequest($request);
+        return $this->sendRequestAndValidateResponse($request);
     }
 
     /**
-     * @param $uri
-     * @param $body
+     * @param string $uri
+     * @param StreamInterface $body
      * @param array $headers
      * @return ResponseInterface
      * @throws HttpClientException
+     * @throws HttpJsonResponseException
+     * @throws HttpResponseException
      */
-    private function sendPutRequest(string $uri, StreamInterface $body = null, $headers = [])
+    private function sendPutRequestAndValidateResponse(string $uri, StreamInterface $body = null, $headers = [])
     {
         $request = $this->createPutRequest($uri, $headers, $body);
 
-        return $this->sendRequest($request);
+        return $this->sendRequestAndValidateResponse($request);
     }
 
-    private function createPostRequest($uri, $headers = [], StreamInterface $body = null) :RequestInterface
+    private function createPostRequest($uri, $headers = [], StreamInterface $body = null): RequestInterface
     {
         $request = $this->createRequest(HttpMethodInterface::POST, $uri);
 
@@ -301,7 +321,7 @@ class Client implements ClientInterface
         return $request;
     }
 
-    private function createPutRequest($uri, $headers = [], StreamInterface $body = null) :RequestInterface
+    private function createPutRequest($uri, $headers = [], StreamInterface $body = null): RequestInterface
     {
         $request = $this->createRequest(HttpMethodInterface::PUT, $uri);
 
@@ -355,9 +375,7 @@ class Client implements ClientInterface
             'password' => $password,
         ];
 
-        $response =  $this->sendPostUrlEncodedRequest($uri, $postData);
-
-        $this->validateResponse($response);
+        $response = $this->sendPostUrlEncodedRequestAndValidateResponse($uri, $postData);
 
         $this->validatePasswordResponse($response);
 
@@ -373,7 +391,7 @@ class Client implements ClientInterface
         $body = $response->getBody()->getContents();
         $data = json_decode($body, true);
 
-        if ($data['status'] !=='ok') {
+        if ($data['status'] !== 'ok') {
             throw new Exception("Bad status ({$data['status']})for Password page. Body: " . $body);
         }
     }
@@ -398,10 +416,9 @@ class Client implements ClientInterface
      */
     private function getDashboardPage()
     {
-        $response = $this->sendGetRequest('https://fleet.taxi.yandex.ru/');
-        $this->validateResponse($response);
+        $url = 'https://fleet.taxi.yandex.ru/';
 
-        return $response;
+        return $this->sendGetRequestAndValidateResponse($url);
     }
 
     private function updateCsrfToken(ResponseInterface $response)
@@ -452,10 +469,9 @@ class Client implements ClientInterface
      */
     private function getDashboardPageWithLanguage(string $languageCode)
     {
-        $response = $this->sendGetRequest('https://fleet.taxi.yandex.ru/?lang=' . $languageCode);
-        $this->validateResponse($response);
+        $url = 'https://fleet.taxi.yandex.ru/?lang=' . $languageCode;
 
-        return $response;
+        return $this->sendGetRequestAndValidateResponse($url);
     }
 
     /**
@@ -489,7 +505,8 @@ class Client implements ClientInterface
                 'field' => 'car.call_sign',
             ]
         ]
-    ):array {
+    ): array
+    {
         $uri = 'https://fleet.taxi.yandex.ru/drivers/list';
 
         $postData = [
@@ -509,11 +526,14 @@ class Client implements ClientInterface
             'X-CSRF-TOKEN' => $this->csrfToken,
         ];
 
-        $response =  $this->sendPostJsonEncodedRequest($uri, $postData, $headers);
+        $response = $this->sendPostJsonEncodedRequestAndValidateResponse($uri, $postData, $headers);
 
-        $this->validateResponse($response);
+        return $this->getJsonDecodedBody($response);
+    }
 
-        $json = $response->getBody()->getContents();
+    private function getJsonDecodedBody(ResponseInterface $response)
+    {
+        $json = $this->getResponseBodyText($response);
 
         return $this->jsonDecode($json);
     }
@@ -525,14 +545,14 @@ class Client implements ClientInterface
      * @return ResponseInterface
      * @throws HttpClientException
      */
-    private function sendPostJsonEncodedRequest(string $uri, array $postData = [], $headers = [])
+    private function sendPostJsonEncodedRequestAndValidateResponse(string $uri, array $postData = [], $headers = [])
     {
         $headers['Content-Type'] = 'application/json;charset=UTF-8';
 
         $body = json_encode($postData);
         $stream = $this->streamFactory->createStream($body);
 
-        return $this->sendPostRequest($uri, $stream, $headers);
+        return $this->sendPostRequestAndValidateResponse($uri, $stream, $headers);
     }
 
     /**
@@ -542,14 +562,14 @@ class Client implements ClientInterface
      * @return ResponseInterface
      * @throws HttpClientException
      */
-    private function sendPutJsonEncodedRequest(string $uri, array $postData = [], $headers = [])
+    private function sendPutJsonEncodedRequestAndValidateResponse(string $uri, array $postData = [], $headers = [])
     {
         $headers['Content-Type'] = 'application/json;charset=UTF-8';
 
         $body = json_encode($postData);
         $stream = $this->streamFactory->createStream($body);
 
-        return $this->sendPutRequest($uri, $stream, $headers);
+        return $this->sendPutRequestAndValidateResponse($uri, $stream, $headers);
     }
 
     private function jsonDecode($json): array
@@ -573,13 +593,9 @@ class Client implements ClientInterface
             'X-Park-Id' => $parkId,
         ];
 
-        $response =  $this->sendPostJsonEncodedRequest($uri, $postData, $headers);
+        $response = $this->sendPostJsonEncodedRequestAndValidateResponse($uri, $postData, $headers);
 
-        $this->validateResponse($response);
-
-        $json = $response->getBody()->getContents();
-
-        $data = $this->jsonDecode($json);
+        $data = $this->getJsonDecodedBody($response);
 
         return $data['id'];
     }
@@ -602,13 +618,10 @@ class Client implements ClientInterface
             'park_id' => $parkId,
         ];
 
-        $response =  $this->sendPostJsonEncodedRequest($uri, $postData, $headers);
-        $this->validateResponse($response);
+        $response = $this->sendPostJsonEncodedRequestAndValidateResponse($uri, $postData, $headers);
         $this->updateCsrfToken($response);
 
-        $json = $response->getBody()->getContents();
-
-        return $this->jsonDecode($json);
+        return $this->getJsonDecodedBody($response);
     }
 
     /**
@@ -629,13 +642,10 @@ class Client implements ClientInterface
             'brand_name' => $brandName,
         ];
 
-        $response =  $this->sendPostJsonEncodedRequest($uri, $postData, $headers);
-        $this->validateResponse($response);
+        $response = $this->sendPostJsonEncodedRequestAndValidateResponse($uri, $postData, $headers);
         $this->updateCsrfToken($response);
 
-        $json = $response->getBody()->getContents();
-
-        return $this->jsonDecode($json);
+        return $this->getJsonDecodedBody($response);
     }
 
     /**
@@ -652,13 +662,10 @@ class Client implements ClientInterface
             'X-CSRF-TOKEN' => $this->csrfToken,
         ];
 
-        $response =  $this->sendPostJsonEncodedRequest($uri, $postData, $headers);
-        $this->validateResponse($response);
+        $response = $this->sendPostJsonEncodedRequestAndValidateResponse($uri, $postData, $headers);
         $this->updateCsrfToken($response);
 
-        $json = $response->getBody()->getContents();
-
-        return $this->jsonDecode($json);
+        return $this->getJsonDecodedBody($response);
     }
 
     /**
@@ -683,11 +690,8 @@ class Client implements ClientInterface
             'car_id' => $carId,
         ];
 
-        $response =  $this->sendPutJsonEncodedRequest($uri, $postData, $headers);
-        $this->validateResponse($response);
+        $response = $this->sendPutJsonEncodedRequestAndValidateResponse($uri, $postData, $headers);
 
-        $json = $response->getBody()->getContents();
-
-        return $this->jsonDecode($json);
+        return $this->getJsonDecodedBody($response);
     }
 }
