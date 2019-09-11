@@ -164,19 +164,21 @@ class Client implements ClientInterface
     {
         if (($responseStatusCode = $response->getStatusCode()) !== 200) {
             $errorCode = $responseStatusCode;
+            $errorMessage = $this->getResponseBodyText($response);
+            $errorReasonPhrase = $response->getReasonPhrase();
 
             $isJson = $this->isJsonResponse($response);
-            $errorMessage = $response->getReasonPhrase();
 
             if ($isJson) {
-                $responseContent = $this->getResponseBodyText($response);
-                $responseArray = $this->jsonDecode($responseContent);
+                $responseArray = $this->jsonDecode($errorMessage);
                 $responseCode = $responseArray['code'];
                 $responseMessage = $responseArray['message'];
-                $errorMessage .= ". {$responseCode}: {$responseMessage}";
-            }
+                $responseDetails =  $responseArray['details'];
 
-            throw new Exception($errorMessage, $errorCode);
+                throw new HttpJsonResponseException($errorMessage, $errorCode, $errorReasonPhrase, $responseCode, $responseMessage, $responseDetails);
+            } else {
+                throw new HttpResponseException($errorMessage, $errorCode, $errorReasonPhrase);
+            }
         }
     }
 
