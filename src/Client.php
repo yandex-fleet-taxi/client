@@ -173,7 +173,7 @@ class Client implements ClientInterface
                 $responseArray = $this->jsonDecode($responseContent);
                 $responseCode = $responseArray['code'];
                 $responseMessage = $responseArray['message'];
-                $errorMessage .= "{$responseCode}: {$responseMessage}";
+                $errorMessage .= ". {$responseCode}: {$responseMessage}";
             }
 
             throw new Exception($errorMessage, $errorCode);

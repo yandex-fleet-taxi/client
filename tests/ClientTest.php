@@ -11,6 +11,7 @@ use Likemusic\YandexFleetTaxiClient\Contracts\LanguageInterface;
 use Likemusic\YandexFleetTaxiClient\Exception as ClientException;
 use Likemusic\YandexFleetTaxiClient\PageParser\FleetTaxiYandexRu\Index as DashboardPageParser;
 use Likemusic\YandexFleetTaxiClient\PageParser\PassportYandexRu\Auth\Welcome as WelcomePageParser;
+use Likemusic\YandexFleetTaxiClient\Tests\FixtureInterface;
 use Likemusic\YandexFleetTaxiClient\Tests\PageParser\FleetTaxiYandexRu\IndexTest;
 use PHPUnit\Framework\TestCase;
 
@@ -127,54 +128,21 @@ final class ClientTest extends TestCase
     public function testCreateDriver(Client $client)
     {
         $parkId = IndexTest::PARK_ID;
-
-        $driverPostData = [
-            'accounts' =>
-                [
-                    'balance_limit' => '5',
-                ],
-            'driver_profile' =>
-                [
-                    'driver_license' =>
-                        [
-                            'country' => 'rus',
-                            'number' => $this->generateDriverLicenceNumber(),
-                            'expiration_date' => '2019-09-20',
-                            'issue_date' => '2019-09-01',
-                            'birth_date' => NULL,
-                        ],
-                    'first_name' => 'Валерий',
-                    'last_name' => 'Иващенко',
-                    'middle_name' => 'Игроевич',
-                    'phones' =>
-                        [
-                            0 => $this->generatePhoneNumber(),
-                        ],
-//                    'work_status' => 'working',
-                    'work_rule_id' => 'a6cb3fbe61a54ba28f8f8b5e35b286db',
-                    'providers' =>
-                        [
-                            0 => 'yandex',
-                        ],
-                    'hire_date' => '2019-09-01',
-                    'deaf' => NULL,
-                    'email' => NULL,
-                    'address' => NULL,
-                    'comment' => NULL,
-                    'check_message' => NULL,
-                    'car_id' => NULL,
-                    'fire_date' => NULL,
-
-                    'bank_accounts' => [],
-                    'emergency_person_contacts' => [],
-                    'identifications' => [],
-                    'primary_state_registration_number' => null,
-                    'tax_identification_number' => null,
-                ],
-        ];
+        $driverPostData = $this->getTestDriverPostData();
 
         $driverId = $client->createDriver($parkId, $driverPostData);
         $this->assertIsString($driverId);
+    }
+
+    private function getTestDriverPostData()
+    {
+        $driverPostData = FixtureInterface::TEST_DRIVER_DATA;
+
+        $driverPostData['driver_profile']['driver_license']['number'] = $this->generateDriverLicenceNumber();
+        $driverPostData['driver_profile']['phones'] = [$this->generatePhoneNumber()];
+        $driverPostData['driver_profile']['hire_date'] = date('Y-d-m');
+
+        return $driverPostData;
     }
 
     /**
