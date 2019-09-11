@@ -163,16 +163,17 @@ class Client implements ClientInterface
     private function validateResponse(ResponseInterface $response)
     {
         if (($responseStatusCode = $response->getStatusCode()) !== 200) {
+            $errorCode = $responseStatusCode;
+
             $isJson = $this->isJsonResponse($response);
+            $errorMessage = $response->getReasonPhrase();
 
             if ($isJson) {
                 $responseContent = $this->getResponseBodyText($response);
                 $responseArray = $this->jsonDecode($responseContent);
-                $errorCode = $responseArray['code'];
-                $errorMessage = $responseArray['message'];
-            } else {
-                $errorCode = $responseStatusCode;
-                $errorMessage = $response->getReasonPhrase();
+                $responseCode = $responseArray['code'];
+                $responseMessage = $responseArray['message'];
+                $errorMessage .= "{$responseCode}: {$responseMessage}";
             }
 
             throw new Exception($errorMessage, $errorCode);
