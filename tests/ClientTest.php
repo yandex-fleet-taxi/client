@@ -140,7 +140,7 @@ final class ClientTest extends TestCase
 
         $driverPostData['driver_profile']['driver_license']['number'] = $this->generateDriverLicenceNumber();
         $driverPostData['driver_profile']['phones'] = [$this->generatePhoneNumber()];
-        $driverPostData['driver_profile']['hire_date'] = date('Y-d-m');
+        $driverPostData['driver_profile']['hire_date'] = date('Y-m-d');
 
         return $driverPostData;
     }
