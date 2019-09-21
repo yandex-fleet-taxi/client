@@ -257,7 +257,267 @@ final class ClientTest extends TestCase
         $carId = self::CAR_ID;
         $data = $client->bindDriverWithCar($parkId, $driverId, $carId);
         $this->assertIsArray($data);
-        $this->assertEquals('success' ,$data['status']);
+        $this->assertEquals('success', $data['status']);
+    }
+
+    /**
+     * @param Client $client
+     * @throws ClientException
+     * @throws HttpClientException
+     * @depends testChangeLocale
+     */
+    public function testGetDriversCardData(Client $client)
+    {
+        $parkId = IndexTest::PARK_ID;
+        $data = $client->getDriversCardData($parkId);
+        $this->assertIsArray($data);
+        $this->validateJsonResponseData($data);
+        $expectedDriversCardData = $this->getExpectedDriversCardData();
+
+        $this->assertEquals($expectedDriversCardData, $data);
+    }
+
+    private function getExpectedDriversCardData()
+    {
+        return [
+            'status' => 200,
+            'success' => true,
+            'data' =>
+                [
+                    'references' =>
+                        [
+                            'driver_statuses' =>
+                                [
+                                    0 =>
+                                        [
+                                            'id' => 'not_working',
+                                            'name' => 'Не работает',
+                                        ],
+                                    1 =>
+                                        [
+                                            'id' => 'working',
+                                            'name' => 'Работает',
+                                        ],
+                                    2 =>
+                                        [
+                                            'id' => 'fired',
+                                            'name' => 'Уволен',
+                                        ],
+                                ],
+                            'driver_identification_types' =>
+                                [
+                                    0 =>
+                                        [
+                                            'id' => 'national',
+                                            'name' => 'Национальный паспорт',
+                                        ],
+                                    1 =>
+                                        [
+                                            'id' => 'passport',
+                                            'name' => 'Международный паспорт',
+                                        ],
+                                ],
+                            'countries' =>
+                                [
+                                    0 =>
+                                        [
+                                            'code' => 'arm',
+                                            'name_en' => 'Armenia',
+                                            'name_ru' => 'Армения',
+                                        ],
+                                    1 =>
+                                        [
+                                            'code' => 'aze',
+                                            'name_en' => 'Azerbaijan',
+                                            'name_ru' => 'Азербайджан',
+                                        ],
+                                    2 =>
+                                        [
+                                            'code' => 'blr',
+                                            'name_en' => 'Belarus',
+                                            'name_ru' => 'Беларусь',
+                                        ],
+                                    3 =>
+                                        [
+                                            'code' => 'est',
+                                            'name_en' => 'Estonia',
+                                            'name_ru' => 'Эстония',
+                                        ],
+                                    4 =>
+                                        [
+                                            'code' => 'fin',
+                                            'name_en' => 'Finland',
+                                            'name_ru' => 'Финляндия',
+                                        ],
+                                    5 =>
+                                        [
+                                            'code' => 'geo',
+                                            'name_en' => 'Georgia',
+                                            'name_ru' => 'Грузия',
+                                        ],
+                                    6 =>
+                                        [
+                                            'code' => 'gha',
+                                            'name_en' => 'Ghana',
+                                            'name_ru' => 'Гана',
+                                        ],
+                                    7 =>
+                                        [
+                                            'code' => 'isr',
+                                            'name_en' => 'Israel',
+                                            'name_ru' => 'Израиль',
+                                        ],
+                                    8 =>
+                                        [
+                                            'code' => 'civ',
+                                            'name_en' => 'Ivory Coast',
+                                            'name_ru' => 'Кот-Д’Ивуар',
+                                        ],
+                                    9 =>
+                                        [
+                                            'code' => 'kaz',
+                                            'name_en' => 'Kazakhstan',
+                                            'name_ru' => 'Казахстан',
+                                        ],
+                                    10 =>
+                                        [
+                                            'code' => 'kgz',
+                                            'name_en' => 'Kyrgyzstan',
+                                            'name_ru' => 'Киргизия',
+                                        ],
+                                    11 =>
+                                        [
+                                            'code' => 'lva',
+                                            'name_en' => 'Latvia',
+                                            'name_ru' => 'Латвия',
+                                        ],
+                                    12 =>
+                                        [
+                                            'code' => 'ltu',
+                                            'name_en' => 'Lithuania',
+                                            'name_ru' => 'Литва',
+                                        ],
+                                    13 =>
+                                        [
+                                            'code' => 'mda',
+                                            'name_en' => 'Moldova',
+                                            'name_ru' => 'Молдова',
+                                        ],
+                                    14 =>
+                                        [
+                                            'code' => 'rou',
+                                            'name_en' => 'Romania',
+                                            'name_ru' => 'Румыния',
+                                        ],
+                                    15 =>
+                                        [
+                                            'code' => 'rus',
+                                            'name_en' => 'Russia',
+                                            'name_ru' => 'Россия',
+                                        ],
+                                    16 =>
+                                        [
+                                            'code' => 'srb',
+                                            'name_en' => 'Serbia',
+                                            'name_ru' => 'Сербия',
+                                        ],
+                                    17 =>
+                                        [
+                                            'code' => 'tjk',
+                                            'name_en' => 'Tajikistan',
+                                            'name_ru' => 'Таджикистан',
+                                        ],
+                                    18 =>
+                                        [
+                                            'code' => 'ukr',
+                                            'name_en' => 'Ukraine',
+                                            'name_ru' => 'Украина',
+                                        ],
+                                    19 =>
+                                        [
+                                            'code' => 'gbr',
+                                            'name_en' => 'United Kingdom',
+                                            'name_ru' => 'Великобритания',
+                                        ],
+                                    20 =>
+                                        [
+                                            'code' => 'uzb',
+                                            'name_en' => 'Uzbekistan',
+                                            'name_ru' => 'Узбекистан',
+                                        ],
+                                ],
+                        ],
+                    'work_rules' =>
+                        [
+                            0 =>
+                                [
+                                    'id' => 'a6cb3fbe61a54ba28f8f8b5e35b286db',
+                                    'name' => '!Базовый - 5',
+                                    'name_localized' => '!Базовый - 5',
+                                    'type' => 0,
+                                    'workshift_commission_percent' => 30,
+                                    'workshifts_enabled' => true,
+                                    'commisison_for_subvention_percent' => 5,
+                                    'enable' => true,
+                                ],
+                            1 =>
+                                [
+                                    'id' => 'e26a3cf21acfe01198d50030487e046b',
+                                    'name' => 'QIWI - 4',
+                                    'name_localized' => 'QIWI - 4',
+                                    'type' => 0,
+                                    'workshift_commission_percent' => 30,
+                                    'workshifts_enabled' => true,
+                                    'commisison_for_subvention_percent' => 4,
+                                    'enable' => true,
+                                ],
+                            2 =>
+                                [
+                                    'id' => 'a68338d6a5534b8bb750010484d5b424',
+                                    'name' => 'Простой - 3',
+                                    'name_localized' => 'Простой - 3',
+                                    'type' => 0,
+                                    'workshift_commission_percent' => 20,
+                                    'workshifts_enabled' => true,
+                                    'commisison_for_subvention_percent' => 3,
+                                    'enable' => true,
+                                ],
+                        ],
+                    'required_fields' =>
+                        [
+                            0 => 'balance_limit',
+                            1 => 'work_status',
+                            2 => 'work_rule_id',
+                            3 => 'providers',
+                            4 => 'hire_date',
+                            5 => 'first_name',
+                            6 => 'last_name',
+                            7 => 'phone',
+                            8 => 'license_country',
+                            9 => 'license_number',
+                            10 => 'license_expiration_date',
+                            11 => 'license_issue_date',
+                        ],
+                    'driver' =>
+                        [
+                            'disabled_fields' =>
+                                [
+                                    0 => 'first_name',
+                                    1 => 'last_name',
+                                    2 => 'middle_name',
+                                    3 => 'license_country',
+                                    4 => 'license_number',
+                                    5 => 'license_expiration_date',
+                                    6 => 'license_issue_date',
+                                ],
+                            'show' =>
+                                [
+                                    'save' => true,
+                                    'hearing_impaired_driver' => false,
+                                ],
+                        ],
+                ],
+        ];//todo
     }
 
     private function validateJsonResponseData(array $data)
@@ -275,7 +535,7 @@ final class ClientTest extends TestCase
     {
         $ret = '';
 
-        for ($i=0; $i<$size; $i++) {
+        for ($i = 0; $i < $size; $i++) {
             $ret .= rand(0, 9);
         }
 
@@ -286,6 +546,6 @@ final class ClientTest extends TestCase
     {
         $numbers = $this->generateNumbersString(12);
 
-        return '+'.$numbers;
+        return '+' . $numbers;
     }
 }

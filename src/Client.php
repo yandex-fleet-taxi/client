@@ -544,6 +544,8 @@ class Client implements ClientInterface
      * @param array $headers
      * @return ResponseInterface
      * @throws HttpClientException
+     * @throws HttpJsonResponseException
+     * @throws HttpResponseException
      */
     private function sendPostJsonEncodedRequestAndValidateResponse(string $uri, array $postData = [], $headers = [])
     {
@@ -651,7 +653,6 @@ class Client implements ClientInterface
     /**
      * @param array $postData
      * @return array
-     * @throws Exception
      * @throws HttpClientException
      */
     public function storeVehicles(array $postData)
@@ -691,6 +692,32 @@ class Client implements ClientInterface
         ];
 
         $response = $this->sendPutJsonEncodedRequestAndValidateResponse($uri, $postData, $headers);
+
+        return $this->getJsonDecodedBody($response);
+    }
+
+    /**
+     * @param string $parkId
+     * @return array
+     * @throws HttpClientException
+     * @throws HttpJsonResponseException
+     * @throws HttpResponseException
+     */
+    public function getDriversCardData(string $parkId): array
+    {
+        $uri = 'https://fleet.taxi.yandex.ru/drivers/card/data';
+
+        $headers = [
+            'X-CSRF-TOKEN' => $this->csrfToken,
+//            'X-Park-Id' => $parkId,
+        ];
+
+        $postData = [
+//            'driver_id' => $driverId,
+            'park_id' => $parkId,
+        ];
+
+        $response = $this->sendPostJsonEncodedRequestAndValidateResponse($uri, $postData, $headers);
 
         return $this->getJsonDecodedBody($response);
     }
