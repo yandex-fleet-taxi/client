@@ -11,7 +11,6 @@ use Likemusic\YandexFleetTaxiClient\Contracts\LanguageInterface;
 use Likemusic\YandexFleetTaxiClient\Exception as ClientException;
 use Likemusic\YandexFleetTaxiClient\PageParser\FleetTaxiYandexRu\Index as DashboardPageParser;
 use Likemusic\YandexFleetTaxiClient\PageParser\PassportYandexRu\Auth\Welcome as WelcomePageParser;
-use Likemusic\YandexFleetTaxiClient\Tests\FixtureInterface;
 use Likemusic\YandexFleetTaxiClient\Tests\PageParser\FleetTaxiYandexRu\IndexTest;
 use PHPUnit\Framework\TestCase;
 
@@ -145,6 +144,29 @@ final class ClientTest extends TestCase
         return $driverPostData;
     }
 
+    private function generateDriverLicenceNumber()
+    {
+        return $this->generateNumbersString(10);
+    }
+
+    private function generateNumbersString($size)
+    {
+        $ret = '';
+
+        for ($i = 0; $i < $size; $i++) {
+            $ret .= rand(0, 9);
+        }
+
+        return $ret;
+    }
+
+    private function generatePhoneNumber()
+    {
+        $numbers = $this->generateNumbersString(12);
+
+        return '+' . $numbers;
+    }
+
     /**
      * @param Client $client
      * @throws ClientException
@@ -157,6 +179,12 @@ final class ClientTest extends TestCase
         $data = $client->getVehiclesCardData($parkId);
         $this->assertIsArray($data);
         $this->validateJsonResponseData($data);
+    }
+
+    private function validateJsonResponseData(array $data)
+    {
+        $this->assertEquals(200, $data['status']);
+        $this->assertTrue($data['success']);
     }
 
     /**
@@ -518,34 +546,5 @@ final class ClientTest extends TestCase
                         ],
                 ],
         ];//todo
-    }
-
-    private function validateJsonResponseData(array $data)
-    {
-        $this->assertEquals(200, $data['status']);
-        $this->assertTrue($data['success']);
-    }
-
-    private function generateDriverLicenceNumber()
-    {
-        return $this->generateNumbersString(10);
-    }
-
-    private function generateNumbersString($size)
-    {
-        $ret = '';
-
-        for ($i = 0; $i < $size; $i++) {
-            $ret .= rand(0, 9);
-        }
-
-        return $ret;
-    }
-
-    private function generatePhoneNumber()
-    {
-        $numbers = $this->generateNumbersString(12);
-
-        return '+' . $numbers;
     }
 }
