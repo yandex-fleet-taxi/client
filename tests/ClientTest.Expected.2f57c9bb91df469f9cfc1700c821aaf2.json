@@ -2,9 +2,9 @@
   "dashboard": {
     "lang_default": [
       {
-        "id": "8d40b7c41af544afa0499b9d0bdf2430",
-        "clid": "400000126733",
-        "city": "Stavropol",
+        "id": "2f57c9bb91df469f9cfc1700c821aaf2",
+        "clid": "400000150536",
+        "city": "Moscow",
         "country_id": "rus",
         "country_name": "Россия",
         "locale": "ru",
@@ -15,16 +15,16 @@
           "park",
           "yandex"
         ],
-        "short_name": "Сокол РФ 26",
-        "name": "Сокол РФ 26, Stavropol",
+        "short_name": "Городское",
+        "name": "Городское, Moscow",
         "brand": 1
       }
     ],
     "lang_russian": [
       {
-        "id": "8d40b7c41af544afa0499b9d0bdf2430",
-        "clid": "400000126733",
-        "city": "Ставрополь",
+        "id": "2f57c9bb91df469f9cfc1700c821aaf2",
+        "clid": "400000150536",
+        "city": "Москва",
         "country_id": "rus",
         "country_name": "Россия",
         "locale": "ru",
@@ -35,8 +35,8 @@
           "park",
           "yandex"
         ],
-        "short_name": "Сокол РФ 26",
-        "name": "Сокол РФ 26, Ставрополь",
+        "short_name": "Городское",
+        "name": "Городское, Москва",
         "brand": 1
       }
     ]
@@ -296,43 +296,83 @@
       },
       "work_rules": [
         {
-          "id": "a6cb3fbe61a54ba28f8f8b5e35b286db",
-          "name": "!Базовый - 5 - см30",
-          "name_localized": "!Базовый - 5 - см30",
+          "id": "bea83f1024f94dfd980a97a26705f070",
+          "name": "3 процента проверенный",
+          "name_localized": "3 процента проверенный",
           "type": 0,
-          "workshift_commission_percent": 30,
-          "workshifts_enabled": true,
-          "commisison_for_subvention_percent": 5,
+          "workshift_commission_percent": 0,
+          "workshifts_enabled": false,
+          "commisison_for_subvention_percent": 1,
+          "enable": true
+        },
+        {
+          "id": "91c26cb04c4949b5a91dcf4e2e3fc6b1",
+          "name": "3%",
+          "name_localized": "3%",
+          "type": 0,
+          "workshift_commission_percent": 0,
+          "workshifts_enabled": false,
+          "commisison_for_subvention_percent": 3,
+          "enable": true
+        },
+        {
+          "id": "105c1ae759084beb934b3ab51969cd3d",
+          "name": "40р в день",
+          "name_localized": "40р в день",
+          "type": 0,
+          "workshift_commission_percent": 0,
+          "workshifts_enabled": false,
+          "commisison_for_subvention_percent": 0,
+          "enable": true
+        },
+        {
+          "id": "8326a6fb76ca42ebaf67d0646a9bf502",
+          "name": "45  р в день",
+          "name_localized": "45  р в день",
+          "type": 0,
+          "workshift_commission_percent": 0,
+          "workshifts_enabled": false,
+          "commisison_for_subvention_percent": 0,
+          "enable": true
+        },
+        {
+          "id": "c5e8c44f5bfd4cd58fb74be2e22c771e",
+          "name": "Минивен",
+          "name_localized": "Минивен",
+          "type": 0,
+          "workshift_commission_percent": 0,
+          "workshifts_enabled": false,
+          "commisison_for_subvention_percent": 0,
+          "enable": true
+        },
+        {
+          "id": "b1e96cfd3d844202aba613db0b1398a8",
+          "name": "МоскваСПБ",
+          "name_localized": "МоскваСПБ",
+          "type": 0,
+          "workshift_commission_percent": 0,
+          "workshifts_enabled": false,
+          "commisison_for_subvention_percent": 1,
           "enable": true
         },
         {
           "id": "e26a3cf21acfe01198d50030487e046b",
-          "name": "QIWI - 4",
-          "name_localized": "QIWI - 4",
+          "name": "Штатны 3%",
+          "name_localized": "Штатны 3%",
           "type": 0,
-          "workshift_commission_percent": 30,
-          "workshifts_enabled": true,
-          "commisison_for_subvention_percent": 4,
+          "workshift_commission_percent": 0,
+          "workshifts_enabled": false,
+          "commisison_for_subvention_percent": 0,
           "enable": true
         },
         {
-          "id": "cd923e1b0863421382e176cf744bd8df",
-          "name": "Момент - 3 - см20 - мах3030 - выв30 - +100р",
-          "name_localized": "Момент - 3 - см20 - мах3030 - выв30 - +100р",
+          "id": "bcd925826fad429bab6d0d482c71cffc",
+          "name": "фикс",
+          "name_localized": "фикс",
           "type": 0,
-          "workshift_commission_percent": 20,
-          "workshifts_enabled": true,
-          "commisison_for_subvention_percent": 3,
-          "enable": true
-        },
-        {
-          "id": "a68338d6a5534b8bb750010484d5b424",
-          "name": "Простой - 3",
-          "name_localized": "Простой - 3",
-          "type": 0,
-          "workshift_commission_percent": 20,
-          "workshifts_enabled": true,
-          "commisison_for_subvention_percent": 3,
+          "workshift_commission_percent": 0,
+          "workshifts_enabled": false,
+          "commisison_for_subvention_percent": 0,
           "enable": true
         }
       ],
@@ -1743,9 +1783,9 @@
       "tariffs": [
         {
           "name": "Эконом",
-          "id": "769030fc7f7349c390fb0d66f3c71101",
+          "id": "870d4727c4a14708a748f5f72f195058",
           "folder_name": "Свои",
-          "folder_id": "1d7e4e01073048299e3eff6a355cf403"
+          "folder_id": "91d3e1fef12e420592a851230a7445ce"
         }
       ],
       "tariff_groups": [
@@ -1754,9 +1794,9 @@
           "tariffs": [
             {
               "name": "Эконом",
-              "id": "769030fc7f7349c390fb0d66f3c71101",
+              "id": "870d4727c4a14708a748f5f72f195058",
               "folder_name": "Свои",
-              "folder_id": "1d7e4e01073048299e3eff6a355cf403"
+              "folder_id": "91d3e1fef12e420592a851230a7445ce"
             }
           ]
         }
@@ -1771,187 +1811,6 @@
         "rom_fields": false
       }
     }
-  },
-  "vehicles_card_models": {
-    "status": 200,
-    "success": true,
-    "data": [
-      {
-        "id": 50,
-        "brand_name": "Alfa Romeo",
-        "name": "105\/115"
-      },
-      {
-        "id": 22,
-        "brand_name": "Alfa Romeo",
-        "name": "145"
-      },
-      {
-        "id": 23,
-        "brand_name": "Alfa Romeo",
-        "name": "146"
-      },
-      {
-        "id": 24,
-        "brand_name": "Alfa Romeo",
-        "name": "147"
-      },
-      {
-        "id": 25,
-        "brand_name": "Alfa Romeo",
-        "name": "155"
-      },
-      {
-        "id": 26,
-        "brand_name": "Alfa Romeo",
-        "name": "156"
-      },
-      {
-        "id": 27,
-        "brand_name": "Alfa Romeo",
-        "name": "159"
-      },
-      {
-        "id": 28,
-        "brand_name": "Alfa Romeo",
-        "name": "164"
-      },
-      {
-        "id": 29,
-        "brand_name": "Alfa Romeo",
-        "name": "166"
-      },
-      {
-        "id": 30,
-        "brand_name": "Alfa Romeo",
-        "name": "1900"
-      },
-      {
-        "id": 31,
-        "brand_name": "Alfa Romeo",
-        "name": "2600"
-      },
-      {
-        "id": 19,
-        "brand_name": "Alfa Romeo",
-        "name": "33"
-      },
-      {
-        "id": 41,
-        "brand_name": "Alfa Romeo",
-        "name": "4C"
-      },
-      {
-        "id": 18,
-        "brand_name": "Alfa Romeo",
-        "name": "6"
-      },
-      {
-        "id": 51,
-        "brand_name": "Alfa Romeo",
-        "name": "6C"
-      },
-      {
-        "id": 20,
-        "brand_name": "Alfa Romeo",
-        "name": "75"
-      },
-      {
-        "id": 35,
-        "brand_name": "Alfa Romeo",
-        "name": "8C Competizione"
-      },
-      {
-        "id": 21,
-        "brand_name": "Alfa Romeo",
-        "name": "90"
-      },
-      {
-        "id": 40,
-        "brand_name": "Alfa Romeo",
-        "name": "Alfasud"
-      },
-      {
-        "id": 39,
-        "brand_name": "Alfa Romeo",
-        "name": "Alfetta"
-      },
-      {
-        "id": 44,
-        "brand_name": "Alfa Romeo",
-        "name": "Arna"
-      },
-      {
-        "id": 33,
-        "brand_name": "Alfa Romeo",
-        "name": "Brera"
-      },
-      {
-        "id": 49,
-        "brand_name": "Alfa Romeo",
-        "name": "Disco Volante"
-      },
-      {
-        "id": 46,
-        "brand_name": "Alfa Romeo",
-        "name": "Giulia"
-      },
-      {
-        "id": 38,
-        "brand_name": "Alfa Romeo",
-        "name": "Giulietta"
-      },
-      {
-        "id": 32,
-        "brand_name": "Alfa Romeo",
-        "name": "GT"
-      },
-      {
-        "id": 42,
-        "brand_name": "Alfa Romeo",
-        "name": "GTA Coupe"
-      },
-      {
-        "id": 37,
-        "brand_name": "Alfa Romeo",
-        "name": "GTV"
-      },
-      {
-        "id": 36,
-        "brand_name": "Alfa Romeo",
-        "name": "MiTo"
-      },
-      {
-        "id": 43,
-        "brand_name": "Alfa Romeo",
-        "name": "Montreal"
-      },
-      {
-        "id": 45,
-        "brand_name": "Alfa Romeo",
-        "name": "RZ"
-      },
-      {
-        "id": 34,
-        "brand_name": "Alfa Romeo",
-        "name": "Spider"
-      },
-      {
-        "id": 48,
-        "brand_name": "Alfa Romeo",
-        "name": "Sprint"
-      },
-      {
-        "id": 52,
-        "brand_name": "Alfa Romeo",
-        "name": "Stelvio"
-      },
-      {
-        "id": 47,
-        "brand_name": "Alfa Romeo",
-        "name": "SZ"
-      }
-    ]
   }
 }
 

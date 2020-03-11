@@ -17,7 +17,9 @@ use PHPUnit\Framework\TestCase;
 final class ClientTest extends TestCase
 {
     const CONFIG_FILENAME = 'tests/ClientTest.json';
-    const EXPECTED_DATA_FILENAME = 'tests/ClientTest.Expected.json';
+    const CONFIG_COMMON_FILENAME = 'tests/ClientTest.Common.json';
+    const EXPECTED_DATA_COMMON_FILENAME = 'tests/ClientTest.Expected.Common.json';
+    const EXPECTED_DATA_PARK_FILENAME_TEMPLATE = 'tests/ClientTest.Expected.{parkId}.json';
 
     /**
      * @return Client
@@ -28,8 +30,7 @@ final class ClientTest extends TestCase
      */
     public function testLogin()
     {
-        $testConfig = $this->getTestConfig();
-        $curlOptions = $this->getCurlOptions($testConfig);
+        $curlOptions = $this->getCurlOptions();
 
         $httpClient = new CurlClient(null, null, $curlOptions);
         $requestFactory = Psr17FactoryDiscovery::findRequestFactory();
@@ -45,6 +46,7 @@ final class ClientTest extends TestCase
             $dashboardPageParser
         );
 
+        $testConfig = $this->getTestConfig();
         $login = $testConfig['login'];
         $password = $testConfig['password'];
 
@@ -64,12 +66,24 @@ final class ClientTest extends TestCase
     }
 
     /**
+     * @return array
+     */
+    private function getTestConfigCommon()
+    {
+        $configJson = file_get_contents(self::CONFIG_FILENAME);
+
+        return json_decode($configJson, true);
+    }
+
+    /**
      * @param array $testConfig
      * @return array
      */
-    private function getCurlOptions(array $testConfig)
+    private function getCurlOptions()
     {
-        $configCurlOptions = $testConfig['curl_options'];
+        $testConfigCommon = $this->getTestConfigCommon();
+
+        $configCurlOptions = $testConfigCommon['curl_options'];
 
         return [
             CURLOPT_PROXY => $configCurlOptions['proxy'],
@@ -88,9 +102,9 @@ final class ClientTest extends TestCase
      */
     public function testGetDashboardPageData(Client $client)
     {
-        $dashboardPageData = $client->getDashboardPageData();
+        $data = $client->getDashboardPageData();
         $expectedDashboardDataLandDefault = $this->getExpectedDashboardDataLandDefault();
-        $this->assertEquals($expectedDashboardDataLandDefault, $dashboardPageData);
+        $this->assertEquals($expectedDashboardDataLandDefault, $data);
 
         return $client;
     }
@@ -100,7 +114,7 @@ final class ClientTest extends TestCase
      */
     private function getExpectedDashboardDataLandDefault()
     {
-        $testConfig = $this->getExpectedData();
+        $testConfig = $this->getExpectedDataPark();
 
         return $testConfig['dashboard']['lang_default'];
     }
@@ -108,9 +122,24 @@ final class ClientTest extends TestCase
     /**
      * @return array
      */
-    private function getExpectedData()
+    private function getExpectedDataPark()
     {
-        $configJson = file_get_contents(self::EXPECTED_DATA_FILENAME);
+        $expectedDataParkFilename = $this->getExpectedDataParkFilename();
+        $configJson = file_get_contents($expectedDataParkFilename);
+
+        return json_decode($configJson, true);
+    }
+
+    private function getExpectedDataParkFilename()
+    {
+        $parkId = $this->getTestParkId();
+
+        return str_replace('{parkId}', $parkId, self::EXPECTED_DATA_PARK_FILENAME_TEMPLATE);
+    }
+
+    private function getExpectedDataCommon()
+    {
+        $configJson = file_get_contents(self::EXPECTED_DATA_COMMON_FILENAME);
 
         return json_decode($configJson, true);
     }
@@ -125,9 +154,9 @@ final class ClientTest extends TestCase
      */
     public function testChangeLocale(Client $client): Client
     {
-        $dashboardPageData = $client->changeLanguage(LanguageInterface::RUSSIAN);
+        $data = $client->changeLanguage(LanguageInterface::RUSSIAN);
         $expectedDashboardData = $this->getExpectedDashboardDataLandRussian();
-        $this->assertEquals($expectedDashboardData, $dashboardPageData);
+        $this->assertEquals($expectedDashboardData, $data);
 
         return $client;
     }
@@ -137,7 +166,7 @@ final class ClientTest extends TestCase
      */
     private function getExpectedDashboardDataLandRussian()
     {
-        $testConfig = $this->getTestConfig();
+        $testConfig = $this->getExpectedDataPark();
 
         return $testConfig['dashboard']['lang_russian'];
     }
@@ -243,12 +272,12 @@ final class ClientTest extends TestCase
     public function testGetVehiclesCardData(Client $client)
     {
         $parkId = $this->getTestParkId();
-        $vehiclesCardData = $client->getVehiclesCardData($parkId);
-        $this->assertIsArray($vehiclesCardData);
-        $this->validateJsonResponseData($vehiclesCardData);
+        $data = $client->getVehiclesCardData($parkId);
+        $this->assertIsArray($data);
+        $this->validateJsonResponseData($data);
 
         $expectedVehiclesCardData = $this->getExpectedVehiclesCardData();
-        $this->assertEquals($expectedVehiclesCardData, $vehiclesCardData);
+        $this->assertEquals($expectedVehiclesCardData, $data);
     }
 
     /**
@@ -256,7 +285,7 @@ final class ClientTest extends TestCase
      */
     private function getExpectedVehiclesCardData()
     {
-        $expectedData = $this->getExpectedData();
+        $expectedData = $this->getExpectedDataPark();
 
         return $expectedData['vehicles_card_data'];
     }
@@ -290,7 +319,7 @@ final class ClientTest extends TestCase
      */
     private function getExpectedVehiclesCardModels()
     {
-        $expectedData = $this->getExpectedData();
+        $expectedData = $this->getExpectedDataCommon();
 
         return $expectedData['vehicles_card_models'];
     }
@@ -300,7 +329,7 @@ final class ClientTest extends TestCase
      */
     private function getConfigBrandName()
     {
-        $testConfig = $this->getTestConfig();
+        $testConfig = $this->getTestConfigCommon();
 
         return $testConfig['brand_name'];
     }
@@ -427,7 +456,7 @@ final class ClientTest extends TestCase
 
     private function getExpectedDriversCardData()
     {
-        $expectedData = $this->getExpectedData();
+        $expectedData = $this->getExpectedDataPark();
 
         return $expectedData['drivers_card_data'];
     }
