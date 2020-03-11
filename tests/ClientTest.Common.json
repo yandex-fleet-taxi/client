@@ -1,0 +1,8 @@
+{
+  "brand_name": "Alfa Romeo",
+  "curl_options": {
+    "proxy": "host.docker.internal:8888",
+    "verifyhost": 0,
+    "verifypeer": 0
+  }
+}

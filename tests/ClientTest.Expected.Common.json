@@ -1,0 +1,184 @@
+{
+  "vehicles_card_models": {
+    "status": 200,
+    "success": true,
+    "data": [
+      {
+        "id": 50,
+        "brand_name": "Alfa Romeo",
+        "name": "105\/115"
+      },
+      {
+        "id": 22,
+        "brand_name": "Alfa Romeo",
+        "name": "145"
+      },
+      {
+        "id": 23,
+        "brand_name": "Alfa Romeo",
+        "name": "146"
+      },
+      {
+        "id": 24,
+        "brand_name": "Alfa Romeo",
+        "name": "147"
+      },
+      {
+        "id": 25,
+        "brand_name": "Alfa Romeo",
+        "name": "155"
+      },
+      {
+        "id": 26,
+        "brand_name": "Alfa Romeo",
+        "name": "156"
+      },
+      {
+        "id": 27,
+        "brand_name": "Alfa Romeo",
+        "name": "159"
+      },
+      {
+        "id": 28,
+        "brand_name": "Alfa Romeo",
+        "name": "164"
+      },
+      {
+        "id": 29,
+        "brand_name": "Alfa Romeo",
+        "name": "166"
+      },
+      {
+        "id": 30,
+        "brand_name": "Alfa Romeo",
+        "name": "1900"
+      },
+      {
+        "id": 31,
+        "brand_name": "Alfa Romeo",
+        "name": "2600"
+      },
+      {
+        "id": 19,
+        "brand_name": "Alfa Romeo",
+        "name": "33"
+      },
+      {
+        "id": 41,
+        "brand_name": "Alfa Romeo",
+        "name": "4C"
+      },
+      {
+        "id": 18,
+        "brand_name": "Alfa Romeo",
+        "name": "6"
+      },
+      {
+        "id": 51,
+        "brand_name": "Alfa Romeo",
+        "name": "6C"
+      },
+      {
+        "id": 20,
+        "brand_name": "Alfa Romeo",
+        "name": "75"
+      },
+      {
+        "id": 35,
+        "brand_name": "Alfa Romeo",
+        "name": "8C Competizione"
+      },
+      {
+        "id": 21,
+        "brand_name": "Alfa Romeo",
+        "name": "90"
+      },
+      {
+        "id": 40,
+        "brand_name": "Alfa Romeo",
+        "name": "Alfasud"
+      },
+      {
+        "id": 39,
+        "brand_name": "Alfa Romeo",
+        "name": "Alfetta"
+      },
+      {
+        "id": 44,
+        "brand_name": "Alfa Romeo",
+        "name": "Arna"
+      },
+      {
+        "id": 33,
+        "brand_name": "Alfa Romeo",
+        "name": "Brera"
+      },
+      {
+        "id": 49,
+        "brand_name": "Alfa Romeo",
+        "name": "Disco Volante"
+      },
+      {
+        "id": 46,
+        "brand_name": "Alfa Romeo",
+        "name": "Giulia"
+      },
+      {
+        "id": 38,
+        "brand_name": "Alfa Romeo",
+        "name": "Giulietta"
+      },
+      {
+        "id": 32,
+        "brand_name": "Alfa Romeo",
+        "name": "GT"
+      },
+      {
+        "id": 42,
+        "brand_name": "Alfa Romeo",
+        "name": "GTA Coupe"
+      },
+      {
+        "id": 37,
+        "brand_name": "Alfa Romeo",
+        "name": "GTV"
+      },
+      {
+        "id": 36,
+        "brand_name": "Alfa Romeo",
+        "name": "MiTo"
+      },
+      {
+        "id": 43,
+        "brand_name": "Alfa Romeo",
+        "name": "Montreal"
+      },
+      {
+        "id": 45,
+        "brand_name": "Alfa Romeo",
+        "name": "RZ"
+      },
+      {
+        "id": 34,
+        "brand_name": "Alfa Romeo",
+        "name": "Spider"
+      },
+      {
+        "id": 48,
+        "brand_name": "Alfa Romeo",
+        "name": "Sprint"
+      },
+      {
+        "id": 52,
+        "brand_name": "Alfa Romeo",
+        "name": "Stelvio"
+      },
+      {
+        "id": 47,
+        "brand_name": "Alfa Romeo",
+        "name": "SZ"
+      }
+    ]
+  }
+}
+
