@@ -16,25 +16,22 @@ use PHPUnit\Framework\TestCase;
 
 final class ClientTest extends TestCase
 {
-    const BRAND_NAME = 'Alfa Romeo';
-    const DRIVER_ID = 'cfa844ddca5e0290dc282086ade844d8';
-    const CAR_ID = 'f9430230414bf8257e3355e8c2985c5f';
+    const CONFIG_FILENAME = 'tests/ClientTest.json';
+    const EXPECTED_DATA_FILENAME = 'tests/ClientTest.Expected.json';
 
     /**
      * @return Client
      * @throws ClientException
      * @throws HttpClientException
      * @doesNotPerformAssertions
+     * @group get
      */
     public function testLogin()
     {
-        $options = [
-            CURLOPT_PROXY => 'host.docker.internal:8888',
-            CURLOPT_SSL_VERIFYHOST => 0,
-            CURLOPT_SSL_VERIFYPEER => 0,
-        ];
+        $testConfig = $this->getTestConfig();
+        $curlOptions = $this->getCurlOptions($testConfig);
 
-        $httpClient = new CurlClient(null, null, $options);
+        $httpClient = new CurlClient(null, null, $curlOptions);
         $requestFactory = Psr17FactoryDiscovery::findRequestFactory();
         $welcomePageParser = new WelcomePageParser();
         $streamFactory = Psr17FactoryDiscovery::findStreamFactory();
@@ -48,12 +45,37 @@ final class ClientTest extends TestCase
             $dashboardPageParser
         );
 
-        $login = 'socol-test';
-        $password = 's12346';
-        $rememberMe = true;
-        $client->login($login, $password, $rememberMe);
+        $login = $testConfig['login'];
+        $password = $testConfig['password'];
+
+        $client->login($login, $password);
 
         return $client;
+    }
+
+    /**
+     * @return array
+     */
+    private function getTestConfig()
+    {
+        $configJson = file_get_contents(self::CONFIG_FILENAME);
+
+        return json_decode($configJson, true);
+    }
+
+    /**
+     * @param array $testConfig
+     * @return array
+     */
+    private function getCurlOptions(array $testConfig)
+    {
+        $configCurlOptions = $testConfig['curl_options'];
+
+        return [
+            CURLOPT_PROXY => $configCurlOptions['proxy'],
+            CURLOPT_SSL_VERIFYHOST => $configCurlOptions['verifyhost'],
+            CURLOPT_SSL_VERIFYPEER => $configCurlOptions['verifypeer'],
+        ];
     }
 
     /**
@@ -62,13 +84,35 @@ final class ClientTest extends TestCase
      * @throws HttpClientException
      * @throws ClientException
      * @depends testLogin
+     * @group get
      */
     public function testGetDashboardPageData(Client $client)
     {
         $dashboardPageData = $client->getDashboardPageData();
-        $this->assertEquals(IndexTest::EXPECTED_DATA_LANG_DEFAULT, $dashboardPageData);
+        $expectedDashboardDataLandDefault = $this->getExpectedDashboardDataLandDefault();
+        $this->assertEquals($expectedDashboardDataLandDefault, $dashboardPageData);
 
         return $client;
+    }
+
+    /**
+     * @return array
+     */
+    private function getExpectedDashboardDataLandDefault()
+    {
+        $testConfig = $this->getExpectedData();
+
+        return $testConfig['dashboard']['lang_default'];
+    }
+
+    /**
+     * @return array
+     */
+    private function getExpectedData()
+    {
+        $configJson = file_get_contents(self::EXPECTED_DATA_FILENAME);
+
+        return json_decode($configJson, true);
     }
 
     /**
@@ -77,13 +121,25 @@ final class ClientTest extends TestCase
      * @throws ClientException
      * @throws HttpClientException
      * @depends testGetDashboardPageData
+     * @group get
      */
     public function testChangeLocale(Client $client): Client
     {
         $dashboardPageData = $client->changeLanguage(LanguageInterface::RUSSIAN);
-        $this->assertEquals(IndexTest::EXPECTED_DATA_LANG_RUSSIAN, $dashboardPageData);
+        $expectedDashboardData = $this->getExpectedDashboardDataLandRussian();
+        $this->assertEquals($expectedDashboardData, $dashboardPageData);
 
         return $client;
+    }
+
+    /**
+     * @return array
+     */
+    private function getExpectedDashboardDataLandRussian()
+    {
+        $testConfig = $this->getTestConfig();
+
+        return $testConfig['dashboard']['lang_russian'];
     }
 
     /**
@@ -91,13 +147,12 @@ final class ClientTest extends TestCase
      * @throws ClientException
      * @throws HttpClientException
      * @depends testChangeLocale
+     * @group get
      */
     public function testGetDrivers(Client $client)
     {
-        $parkId = IndexTest::PARK_ID;
+        $parkId = $this->getTestParkId();
         $driversListData = $client->getDrivers($parkId);
-        //$expectedDriversListData = $this->getExpectedDriversListData();
-
 
         $this->assertArrayHasKey('status', $driversListData);
         $this->assertEquals(200, $driversListData['status']);
@@ -117,6 +172,17 @@ final class ClientTest extends TestCase
         $this->assertArrayHasKey('link_drivers_and_orders', $driversListData);
         $this->assertArrayHasKey('show', $driversListData);
     }
+
+    /**
+     * @return string
+     */
+    private function getTestParkId()
+    {
+        $testConfig = $this->getTestConfig();
+
+        return $testConfig['park_id'];
+    }
+
 
     /**
      * @param Client $client
@@ -172,13 +238,27 @@ final class ClientTest extends TestCase
      * @throws ClientException
      * @throws HttpClientException
      * @depends testChangeLocale
+     * @group get
      */
     public function testGetVehiclesCardData(Client $client)
     {
-        $parkId = IndexTest::PARK_ID;
-        $data = $client->getVehiclesCardData($parkId);
-        $this->assertIsArray($data);
-        $this->validateJsonResponseData($data);
+        $parkId = $this->getTestParkId();
+        $vehiclesCardData = $client->getVehiclesCardData($parkId);
+        $this->assertIsArray($vehiclesCardData);
+        $this->validateJsonResponseData($vehiclesCardData);
+
+        $expectedVehiclesCardData = $this->getExpectedVehiclesCardData();
+        $this->assertEquals($expectedVehiclesCardData, $vehiclesCardData);
+    }
+
+    /**
+     * @return array
+     */
+    private function getExpectedVehiclesCardData()
+    {
+        $expectedData = $this->getExpectedData();
+
+        return $expectedData['vehicles_card_data'];
     }
 
     private function validateJsonResponseData(array $data)
@@ -192,13 +272,37 @@ final class ClientTest extends TestCase
      * @throws ClientException
      * @throws HttpClientException
      * @depends testChangeLocale
+     * @group get
      */
     public function testGetVehiclesCardModels(Client $client)
     {
-        $brandName = self::BRAND_NAME;
+        $brandName = $this->getConfigBrandName();
         $data = $client->getVehiclesCardModels($brandName);
         $this->assertIsArray($data);
         $this->validateJsonResponseData($data);
+
+        $expectedVehiclesCardModels = $this->getExpectedVehiclesCardModels();
+        $this->assertEquals($expectedVehiclesCardModels, $data);
+    }
+
+    /**
+     * @return array
+     */
+    private function getExpectedVehiclesCardModels()
+    {
+        $expectedData = $this->getExpectedData();
+
+        return $expectedData['vehicles_card_models'];
+    }
+
+    /**
+     * @return string
+     */
+    private function getConfigBrandName()
+    {
+        $testConfig = $this->getTestConfig();
+
+        return $testConfig['brand_name'];
     }
 
     /**
@@ -281,11 +385,26 @@ final class ClientTest extends TestCase
     public function testBindDriverWithCar(Client $client)
     {
         $parkId = IndexTest::PARK_ID;
-        $driverId = self::DRIVER_ID;
-        $carId = self::CAR_ID;
+        $testConfig = $this->getTestConfig();
+        $driverId = $this->getTestDriverId($testConfig);
+        $carId = $this->getTestCarId($testConfig);
         $data = $client->bindDriverWithCar($parkId, $driverId, $carId);
         $this->assertIsArray($data);
         $this->assertEquals('success', $data['status']);
+    }
+
+    /**
+     * @param array $testConfig
+     * @return string
+     */
+    private function getTestDriverId(array $testConfig)
+    {
+        return $testConfig['driver_id'];
+    }
+
+    private function getTestCarId(array $testConfig)
+    {
+        return $testConfig['car_id'];
     }
 
     /**
@@ -293,10 +412,11 @@ final class ClientTest extends TestCase
      * @throws ClientException
      * @throws HttpClientException
      * @depends testChangeLocale
+     * @group get
      */
     public function testGetDriversCardData(Client $client)
     {
-        $parkId = IndexTest::PARK_ID;
+        $parkId = $this->getTestParkId();
         $data = $client->getDriversCardData($parkId);
         $this->assertIsArray($data);
         $this->validateJsonResponseData($data);
@@ -307,244 +427,8 @@ final class ClientTest extends TestCase
 
     private function getExpectedDriversCardData()
     {
-        return [
-            'status' => 200,
-            'success' => true,
-            'data' =>
-                [
-                    'references' =>
-                        [
-                            'driver_statuses' =>
-                                [
-                                    0 =>
-                                        [
-                                            'id' => 'not_working',
-                                            'name' => 'Не работает',
-                                        ],
-                                    1 =>
-                                        [
-                                            'id' => 'working',
-                                            'name' => 'Работает',
-                                        ],
-                                    2 =>
-                                        [
-                                            'id' => 'fired',
-                                            'name' => 'Уволен',
-                                        ],
-                                ],
-                            'driver_identification_types' =>
-                                [
-                                    0 =>
-                                        [
-                                            'id' => 'national',
-                                            'name' => 'Национальный паспорт',
-                                        ],
-                                    1 =>
-                                        [
-                                            'id' => 'passport',
-                                            'name' => 'Международный паспорт',
-                                        ],
-                                ],
-                            'countries' =>
-                                [
-                                    0 =>
-                                        [
-                                            'code' => 'arm',
-                                            'name_en' => 'Armenia',
-                                            'name_ru' => 'Армения',
-                                        ],
-                                    1 =>
-                                        [
-                                            'code' => 'aze',
-                                            'name_en' => 'Azerbaijan',
-                                            'name_ru' => 'Азербайджан',
-                                        ],
-                                    2 =>
-                                        [
-                                            'code' => 'blr',
-                                            'name_en' => 'Belarus',
-                                            'name_ru' => 'Беларусь',
-                                        ],
-                                    3 =>
-                                        [
-                                            'code' => 'est',
-                                            'name_en' => 'Estonia',
-                                            'name_ru' => 'Эстония',
-                                        ],
-                                    4 =>
-                                        [
-                                            'code' => 'fin',
-                                            'name_en' => 'Finland',
-                                            'name_ru' => 'Финляндия',
-                                        ],
-                                    5 =>
-                                        [
-                                            'code' => 'geo',
-                                            'name_en' => 'Georgia',
-                                            'name_ru' => 'Грузия',
-                                        ],
-                                    6 =>
-                                        [
-                                            'code' => 'gha',
-                                            'name_en' => 'Ghana',
-                                            'name_ru' => 'Гана',
-                                        ],
-                                    7 =>
-                                        [
-                                            'code' => 'isr',
-                                            'name_en' => 'Israel',
-                                            'name_ru' => 'Израиль',
-                                        ],
-                                    8 =>
-                                        [
-                                            'code' => 'civ',
-                                            'name_en' => 'Ivory Coast',
-                                            'name_ru' => 'Кот-Д’Ивуар',
-                                        ],
-                                    9 =>
-                                        [
-                                            'code' => 'kaz',
-                                            'name_en' => 'Kazakhstan',
-                                            'name_ru' => 'Казахстан',
-                                        ],
-                                    10 =>
-                                        [
-                                            'code' => 'kgz',
-                                            'name_en' => 'Kyrgyzstan',
-                                            'name_ru' => 'Киргизия',
-                                        ],
-                                    11 =>
-                                        [
-                                            'code' => 'lva',
-                                            'name_en' => 'Latvia',
-                                            'name_ru' => 'Латвия',
-                                        ],
-                                    12 =>
-                                        [
-                                            'code' => 'ltu',
-                                            'name_en' => 'Lithuania',
-                                            'name_ru' => 'Литва',
-                                        ],
-                                    13 =>
-                                        [
-                                            'code' => 'mda',
-                                            'name_en' => 'Moldova',
-                                            'name_ru' => 'Молдова',
-                                        ],
-                                    14 =>
-                                        [
-                                            'code' => 'rou',
-                                            'name_en' => 'Romania',
-                                            'name_ru' => 'Румыния',
-                                        ],
-                                    15 =>
-                                        [
-                                            'code' => 'rus',
-                                            'name_en' => 'Russia',
-                                            'name_ru' => 'Россия',
-                                        ],
-                                    16 =>
-                                        [
-                                            'code' => 'srb',
-                                            'name_en' => 'Serbia',
-                                            'name_ru' => 'Сербия',
-                                        ],
-                                    17 =>
-                                        [
-                                            'code' => 'tjk',
-                                            'name_en' => 'Tajikistan',
-                                            'name_ru' => 'Таджикистан',
-                                        ],
-                                    18 =>
-                                        [
-                                            'code' => 'ukr',
-                                            'name_en' => 'Ukraine',
-                                            'name_ru' => 'Украина',
-                                        ],
-                                    19 =>
-                                        [
-                                            'code' => 'gbr',
-                                            'name_en' => 'United Kingdom',
-                                            'name_ru' => 'Великобритания',
-                                        ],
-                                    20 =>
-                                        [
-                                            'code' => 'uzb',
-                                            'name_en' => 'Uzbekistan',
-                                            'name_ru' => 'Узбекистан',
-                                        ],
-                                ],
-                        ],
-                    'work_rules' =>
-                        [
-                            0 =>
-                                [
-                                    'id' => 'a6cb3fbe61a54ba28f8f8b5e35b286db',
-                                    'name' => '!Базовый - 5',
-                                    'name_localized' => '!Базовый - 5',
-                                    'type' => 0,
-                                    'workshift_commission_percent' => 30,
-                                    'workshifts_enabled' => true,
-                                    'commisison_for_subvention_percent' => 5,
-                                    'enable' => true,
-                                ],
-                            1 =>
-                                [
-                                    'id' => 'e26a3cf21acfe01198d50030487e046b',
-                                    'name' => 'QIWI - 4',
-                                    'name_localized' => 'QIWI - 4',
-                                    'type' => 0,
-                                    'workshift_commission_percent' => 30,
-                                    'workshifts_enabled' => true,
-                                    'commisison_for_subvention_percent' => 4,
-                                    'enable' => true,
-                                ],
-                            2 =>
-                                [
-                                    'id' => 'a68338d6a5534b8bb750010484d5b424',
-                                    'name' => 'Простой - 3',
-                                    'name_localized' => 'Простой - 3',
-                                    'type' => 0,
-                                    'workshift_commission_percent' => 20,
-                                    'workshifts_enabled' => true,
-                                    'commisison_for_subvention_percent' => 3,
-                                    'enable' => true,
-                                ],
-                        ],
-                    'required_fields' =>
-                        [
-                            0 => 'balance_limit',
-                            1 => 'work_status',
-                            2 => 'work_rule_id',
-                            3 => 'providers',
-                            4 => 'hire_date',
-                            5 => 'first_name',
-                            6 => 'last_name',
-                            7 => 'phone',
-                            8 => 'license_country',
-                            9 => 'license_number',
-                            10 => 'license_expiration_date',
-                            11 => 'license_issue_date',
-                        ],
-                    'driver' =>
-                        [
-                            'disabled_fields' =>
-                                [
-                                    0 => 'first_name',
-                                    1 => 'last_name',
-                                    2 => 'middle_name',
-                                    3 => 'license_country',
-                                    4 => 'license_number',
-                                    5 => 'license_expiration_date',
-                                    6 => 'license_issue_date',
-                                ],
-                            'show' =>
-                                [
-                                    'save' => true,
-                                    'hearing_impaired_driver' => false,
-                                ],
-                        ],
-                ],
-        ];//todo
+        $expectedData = $this->getExpectedData();
+
+        return $expectedData['drivers_card_data'];
     }
 }
