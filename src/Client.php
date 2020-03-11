@@ -641,7 +641,6 @@ class Client implements ClientInterface
         ];
 
         $response = $this->sendPostJsonEncodedRequestAndValidateResponse($uri, $postData, $headers);
-        $this->updateCsrfToken($response);
 
         return $this->getJsonDecodedBody($response);
     }
