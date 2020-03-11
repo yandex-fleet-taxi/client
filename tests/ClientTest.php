@@ -9,9 +9,12 @@ use Http\Discovery\Psr17FactoryDiscovery;
 use Likemusic\YandexFleetTaxiClient\Client;
 use Likemusic\YandexFleetTaxiClient\Contracts\LanguageInterface;
 use Likemusic\YandexFleetTaxiClient\Exception as ClientException;
+use Likemusic\YandexFleetTaxiClient\HttpJsonResponseException;
+use Likemusic\YandexFleetTaxiClient\HttpResponseException;
 use Likemusic\YandexFleetTaxiClient\PageParser\FleetTaxiYandexRu\Index as DashboardPageParser;
 use Likemusic\YandexFleetTaxiClient\PageParser\PassportYandexRu\Auth\Welcome as WelcomePageParser;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Client\ClientExceptionInterface;
 
 final class ClientTest extends TestCase
 {
@@ -25,7 +28,9 @@ final class ClientTest extends TestCase
     /**
      * @return Client
      * @throws ClientException
-     * @throws HttpClientException
+     * @throws ClientExceptionInterface
+     * @throws HttpJsonResponseException
+     * @throws HttpResponseException
      * @doesNotPerformAssertions
      * @group get
      */
@@ -57,7 +62,6 @@ final class ClientTest extends TestCase
     }
 
     /**
-     * @param array $testConfig
      * @return array
      */
     private function getCurlOptions()
@@ -96,8 +100,9 @@ final class ClientTest extends TestCase
     /**
      * @param Client $client
      * @return Client
-     * @throws HttpClientException
-     * @throws ClientException
+     * @throws ClientExceptionInterface
+     * @throws HttpJsonResponseException
+     * @throws HttpResponseException
      * @depends testLogin
      * @group get
      */
@@ -151,8 +156,9 @@ final class ClientTest extends TestCase
     /**
      * @param Client $client
      * @return Client
-     * @throws ClientException
-     * @throws HttpClientException
+     * @throws ClientExceptionInterface
+     * @throws HttpJsonResponseException
+     * @throws HttpResponseException
      * @depends testGetDashboardPageData
      * @group get
      */
@@ -177,8 +183,9 @@ final class ClientTest extends TestCase
 
     /**
      * @param Client $client
-     * @throws ClientException
-     * @throws HttpClientException
+     * @throws ClientExceptionInterface
+     * @throws HttpJsonResponseException
+     * @throws HttpResponseException
      * @depends testChangeLocale
      * @group get
      */
@@ -208,8 +215,10 @@ final class ClientTest extends TestCase
 
     /**
      * @param Client $client
-     * @throws ClientException
-     * @throws HttpClientException
+     * @return string
+     * @throws ClientExceptionInterface
+     * @throws HttpJsonResponseException
+     * @throws HttpResponseException
      * @depends testChangeLocale
      */
     public function testCreateDriver(Client $client)
@@ -220,6 +229,8 @@ final class ClientTest extends TestCase
         $driverId = $client->createDriver($parkId, $driverPostData);
         $this->assertIsString($driverId);
         $this->assertEquals(32, strlen($driverId));
+
+        return $driverId;
     }
 
     private function getTestDriverPostData()
@@ -274,8 +285,9 @@ final class ClientTest extends TestCase
 
     /**
      * @param Client $client
-     * @throws ClientException
-     * @throws HttpClientException
+     * @throws ClientExceptionInterface
+     * @throws HttpJsonResponseException
+     * @throws HttpResponseException
      * @depends testChangeLocale
      * @group get
      */
@@ -308,8 +320,9 @@ final class ClientTest extends TestCase
 
     /**
      * @param Client $client
-     * @throws ClientException
-     * @throws HttpClientException
+     * @throws ClientExceptionInterface
+     * @throws HttpJsonResponseException
+     * @throws HttpResponseException
      * @depends testChangeLocale
      * @group get
      */
@@ -353,8 +366,10 @@ final class ClientTest extends TestCase
 
     /**
      * @param Client $client
-     * @throws ClientException
-     * @throws HttpClientException
+     * @return mixed
+     * @throws ClientExceptionInterface
+     * @throws HttpJsonResponseException
+     * @throws HttpResponseException
      * @depends testChangeLocale
      */
     public function testCreateCar(Client $client)
@@ -381,13 +396,8 @@ final class ClientTest extends TestCase
             'amenities',
             'tariffs'
         ], $data);
-    }
 
-    private function assertArrayHasKeys(array $keys, array $array)
-    {
-        foreach ($keys as $key) {
-            $this->assertArrayHasKey($key, $array);
-        }
+        return $data['id'];
     }
 
     /**
@@ -398,41 +408,38 @@ final class ClientTest extends TestCase
         return include self::FILENAME_POST_DATA_CAR_TEMPLATE;
     }
 
+    private function assertArrayHasKeys(array $keys, array $array)
+    {
+        foreach ($keys as $key) {
+            $this->assertArrayHasKey($key, $array);
+        }
+    }
+
     /**
      * @param Client $client
-     * @throws ClientException
-     * @throws HttpClientException
+     * @param string $driverId
+     * @param string $carId
+     * @throws ClientExceptionInterface
+     * @throws HttpJsonResponseException
+     * @throws HttpResponseException
      * @depends testChangeLocale
+     * @depends testCreateDriver
+     * @depends testCreateCar
      */
-    public function testBindDriverWithCar(Client $client)
+    public function testBindDriverWithCar(Client $client, string $driverId, string $carId)
     {
         $parkId = $this->getTestParkId();
-        $testConfig = $this->getTestConfig();
-        $driverId = $this->getTestDriverId($testConfig);
-        $carId = $this->getTestCarId($testConfig);
         $data = $client->bindDriverWithCar($parkId, $driverId, $carId);
         $this->assertIsArray($data);
+        $this->assertArrayHasKeys('status', $data);
         $this->assertEquals('success', $data['status']);
     }
 
     /**
-     * @param array $testConfig
-     * @return string
-     */
-    private function getTestDriverId(array $testConfig)
-    {
-        return $testConfig['driver_id'];
-    }
-
-    private function getTestCarId(array $testConfig)
-    {
-        return $testConfig['car_id'];
-    }
-
-    /**
      * @param Client $client
      * @throws ClientException
      * @throws HttpClientException
+     * @throws ClientExceptionInterface
      * @depends testChangeLocale
      * @group get
      */
