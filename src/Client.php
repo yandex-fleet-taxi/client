@@ -12,6 +12,7 @@ use Likemusic\YandexFleetTaxiClient\Contracts\HttpMethodInterface;
 use Likemusic\YandexFleetTaxiClient\PageParser\FleetTaxiYandexRu\Index as DashboardPageParser;
 use Likemusic\YandexFleetTaxiClient\PageParser\PassportYandexRu\Auth\Welcome as WelcomePageParser;
 use Likemusic\YandexFleetTaxiClient\PageParser\PassportYandexRu\Auth\Welcome\Data as WelcomePageParserData;
+use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -160,9 +161,9 @@ class Client implements ClientInterface
     /**
      * @param RequestInterface $request
      * @return ResponseInterface
-     * @throws HttpClientException
      * @throws HttpJsonResponseException
      * @throws HttpResponseException
+     * @throws ClientExceptionInterface
      */
     private function sendRequestAndValidateResponse(RequestInterface $request): ResponseInterface
     {
