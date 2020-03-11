@@ -11,7 +11,6 @@ use Likemusic\YandexFleetTaxiClient\Contracts\LanguageInterface;
 use Likemusic\YandexFleetTaxiClient\Exception as ClientException;
 use Likemusic\YandexFleetTaxiClient\PageParser\FleetTaxiYandexRu\Index as DashboardPageParser;
 use Likemusic\YandexFleetTaxiClient\PageParser\PassportYandexRu\Auth\Welcome as WelcomePageParser;
-use Likemusic\YandexFleetTaxiClient\Tests\PageParser\FleetTaxiYandexRu\IndexTest;
 use PHPUnit\Framework\TestCase;
 
 final class ClientTest extends TestCase
@@ -56,26 +55,6 @@ final class ClientTest extends TestCase
     }
 
     /**
-     * @return array
-     */
-    private function getTestConfig()
-    {
-        $configJson = file_get_contents(self::CONFIG_FILENAME);
-
-        return json_decode($configJson, true);
-    }
-
-    /**
-     * @return array
-     */
-    private function getTestConfigCommon()
-    {
-        $configJson = file_get_contents(self::CONFIG_FILENAME);
-
-        return json_decode($configJson, true);
-    }
-
-    /**
      * @param array $testConfig
      * @return array
      */
@@ -90,6 +69,26 @@ final class ClientTest extends TestCase
             CURLOPT_SSL_VERIFYHOST => $configCurlOptions['verifyhost'],
             CURLOPT_SSL_VERIFYPEER => $configCurlOptions['verifypeer'],
         ];
+    }
+
+    /**
+     * @return array
+     */
+    private function getTestConfigCommon()
+    {
+        $configJson = file_get_contents(self::CONFIG_FILENAME);
+
+        return json_decode($configJson, true);
+    }
+
+    /**
+     * @return array
+     */
+    private function getTestConfig()
+    {
+        $configJson = file_get_contents(self::CONFIG_FILENAME);
+
+        return json_decode($configJson, true);
     }
 
     /**
@@ -137,11 +136,14 @@ final class ClientTest extends TestCase
         return str_replace('{parkId}', $parkId, self::EXPECTED_DATA_PARK_FILENAME_TEMPLATE);
     }
 
-    private function getExpectedDataCommon()
+    /**
+     * @return string
+     */
+    private function getTestParkId()
     {
-        $configJson = file_get_contents(self::EXPECTED_DATA_COMMON_FILENAME);
+        $testConfig = $this->getTestConfig();
 
-        return json_decode($configJson, true);
+        return $testConfig['park_id'];
     }
 
     /**
@@ -203,17 +205,6 @@ final class ClientTest extends TestCase
     }
 
     /**
-     * @return string
-     */
-    private function getTestParkId()
-    {
-        $testConfig = $this->getTestConfig();
-
-        return $testConfig['park_id'];
-    }
-
-
-    /**
      * @param Client $client
      * @throws ClientException
      * @throws HttpClientException
@@ -221,11 +212,12 @@ final class ClientTest extends TestCase
      */
     public function testCreateDriver(Client $client)
     {
-        $parkId = IndexTest::PARK_ID;
+        $parkId = $this->getTestParkId();
         $driverPostData = $this->getTestDriverPostData();
 
         $driverId = $client->createDriver($parkId, $driverPostData);
         $this->assertIsString($driverId);
+        $this->assertEquals(32, strlen($driverId));
     }
 
     private function getTestDriverPostData()
@@ -235,6 +227,7 @@ final class ClientTest extends TestCase
         $driverPostData['driver_profile']['driver_license']['number'] = $this->generateDriverLicenceNumber();
         $driverPostData['driver_profile']['phones'] = [$this->generatePhoneNumber()];
         $driverPostData['driver_profile']['hire_date'] = date('Y-m-d');
+        $driverPostData['driver_profile']['work_rule_id'] = $this->getTestWorkRuleId();
 
         return $driverPostData;
     }
@@ -262,6 +255,13 @@ final class ClientTest extends TestCase
         return '+' . $numbers;
     }
 
+    private function getTestWorkRuleId()
+    {
+        $testConfig = $this->getTestConfig();
+
+        return $testConfig['work_rule_id'];
+    }
+
     /**
      * @param Client $client
      * @throws ClientException
@@ -280,6 +280,12 @@ final class ClientTest extends TestCase
         $this->assertEquals($expectedVehiclesCardData, $data);
     }
 
+    private function validateJsonResponseData(array $data)
+    {
+        $this->assertEquals(200, $data['status']);
+        $this->assertTrue($data['success']);
+    }
+
     /**
      * @return array
      */
@@ -288,12 +294,6 @@ final class ClientTest extends TestCase
         $expectedData = $this->getExpectedDataPark();
 
         return $expectedData['vehicles_card_data'];
-    }
-
-    private function validateJsonResponseData(array $data)
-    {
-        $this->assertEquals(200, $data['status']);
-        $this->assertTrue($data['success']);
     }
 
     /**
@@ -315,6 +315,16 @@ final class ClientTest extends TestCase
     }
 
     /**
+     * @return string
+     */
+    private function getConfigBrandName()
+    {
+        $testConfig = $this->getTestConfigCommon();
+
+        return $testConfig['brand_name'];
+    }
+
+    /**
      * @return array
      */
     private function getExpectedVehiclesCardModels()
@@ -324,14 +334,11 @@ final class ClientTest extends TestCase
         return $expectedData['vehicles_card_models'];
     }
 
-    /**
-     * @return string
-     */
-    private function getConfigBrandName()
+    private function getExpectedDataCommon()
     {
-        $testConfig = $this->getTestConfigCommon();
+        $configJson = file_get_contents(self::EXPECTED_DATA_COMMON_FILENAME);
 
-        return $testConfig['brand_name'];
+        return json_decode($configJson, true);
     }
 
     /**
@@ -413,7 +420,7 @@ final class ClientTest extends TestCase
      */
     public function testBindDriverWithCar(Client $client)
     {
-        $parkId = IndexTest::PARK_ID;
+        $parkId = $this->getTestParkId();
         $testConfig = $this->getTestConfig();
         $driverId = $this->getTestDriverId($testConfig);
         $carId = $this->getTestCarId($testConfig);
