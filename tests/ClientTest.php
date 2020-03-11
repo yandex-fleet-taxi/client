@@ -20,7 +20,7 @@ final class ClientTest extends TestCase
     const FILENAME_EXPECTED_DATA_COMMON = 'tests/ClientTest.Expected.Common.json';
     const FILENAME_TEMPLATE_EXPECTED_DATA_PARK = 'tests/ClientTest.Expected.{parkId}.json';
     const FILENAME_POST_DATA_DRIVER_TEMPLATE = 'tests/Textures/PostData/Driver.php';
-    const FILENAME_POST_DATA_VEHICLE_TEMPLATE = 'tests/Textures/PostData/Car.php';
+    const FILENAME_POST_DATA_CAR_TEMPLATE = 'tests/Textures/PostData/Car.php';
 
     /**
      * @return Client
@@ -363,7 +363,31 @@ final class ClientTest extends TestCase
         $carPostData = $this->getCarPostData();
         $data = $client->createCar($parkId, $carPostData);
         $this->assertIsArray($data);
-        $this->validateJsonResponseData($data);
+        $this->assertArrayHasKeys([
+            'id',
+            'park_id',
+            'brand',
+            'model',
+            'color',
+            'year',
+            'number',
+            'callsign',
+            'mileage',
+            'vin',
+            'booster_count',
+            'registration_cert',
+            'status',
+            'transmission',
+            'amenities',
+            'tariffs'
+        ], $data);
+    }
+
+    private function assertArrayHasKeys(array $keys, array $array)
+    {
+        foreach ($keys as $key) {
+            $this->assertArrayHasKey($key, $array);
+        }
     }
 
     /**
@@ -371,7 +395,7 @@ final class ClientTest extends TestCase
      */
     private function getCarPostData()
     {
-        return include self::FILENAME_POST_DATA_VEHICLE_TEMPLATE;
+        return include self::FILENAME_POST_DATA_CAR_TEMPLATE;
     }
 
     /**
