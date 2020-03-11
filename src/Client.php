@@ -651,16 +651,20 @@ class Client implements ClientInterface
     }
 
     /**
+     * @param string $parkId
      * @param array $postData
      * @return array
      * @throws HttpClientException
+     * @throws HttpJsonResponseException
+     * @throws HttpResponseException
      */
-    public function storeVehicles(array $postData)
+    public function createCar(string $parkId, array $postData)
     {
-        $uri = 'https://fleet.taxi.yandex.ru/vehicles/store';
+        $uri = 'https://fleet.taxi.yandex.ru/api/v1/cars/create';
 
         $headers = [
             'X-CSRF-TOKEN' => $this->csrfToken,
+            'X-Park-Id' => $parkId,
         ];
 
         $response = $this->sendPostJsonEncodedRequestAndValidateResponse($uri, $postData, $headers);

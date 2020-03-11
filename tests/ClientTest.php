@@ -15,10 +15,12 @@ use PHPUnit\Framework\TestCase;
 
 final class ClientTest extends TestCase
 {
-    const CONFIG_FILENAME = 'tests/ClientTest.json';
-    const CONFIG_COMMON_FILENAME = 'tests/ClientTest.Common.json';
-    const EXPECTED_DATA_COMMON_FILENAME = 'tests/ClientTest.Expected.Common.json';
-    const EXPECTED_DATA_PARK_FILENAME_TEMPLATE = 'tests/ClientTest.Expected.{parkId}.json';
+    const FILENAME_CONFIG = 'tests/ClientTest.json';
+    const FILENAME_CONFIG_COMMON = 'tests/ClientTest.Common.json';
+    const FILENAME_EXPECTED_DATA_COMMON = 'tests/ClientTest.Expected.Common.json';
+    const FILENAME_TEMPLATE_EXPECTED_DATA_PARK = 'tests/ClientTest.Expected.{parkId}.json';
+    const FILENAME_POST_DATA_DRIVER_TEMPLATE = 'tests/Textures/PostData/Driver.php';
+    const FILENAME_POST_DATA_VEHICLE_TEMPLATE = 'tests/Textures/PostData/Car.php';
 
     /**
      * @return Client
@@ -76,7 +78,7 @@ final class ClientTest extends TestCase
      */
     private function getTestConfigCommon()
     {
-        $configJson = file_get_contents(self::CONFIG_FILENAME);
+        $configJson = file_get_contents(self::FILENAME_CONFIG);
 
         return json_decode($configJson, true);
     }
@@ -86,7 +88,7 @@ final class ClientTest extends TestCase
      */
     private function getTestConfig()
     {
-        $configJson = file_get_contents(self::CONFIG_FILENAME);
+        $configJson = file_get_contents(self::FILENAME_CONFIG);
 
         return json_decode($configJson, true);
     }
@@ -133,7 +135,7 @@ final class ClientTest extends TestCase
     {
         $parkId = $this->getTestParkId();
 
-        return str_replace('{parkId}', $parkId, self::EXPECTED_DATA_PARK_FILENAME_TEMPLATE);
+        return str_replace('{parkId}', $parkId, self::FILENAME_TEMPLATE_EXPECTED_DATA_PARK);
     }
 
     /**
@@ -222,7 +224,7 @@ final class ClientTest extends TestCase
 
     private function getTestDriverPostData()
     {
-        $driverPostData = FixtureInterface::TEST_DRIVER_DATA;
+        $driverPostData = $this->getDriverPostDataTemplate();
 
         $driverPostData['driver_profile']['driver_license']['number'] = $this->generateDriverLicenceNumber();
         $driverPostData['driver_profile']['phones'] = [$this->generatePhoneNumber()];
@@ -230,6 +232,14 @@ final class ClientTest extends TestCase
         $driverPostData['driver_profile']['work_rule_id'] = $this->getTestWorkRuleId();
 
         return $driverPostData;
+    }
+
+    /**
+     * @return array
+     */
+    private function getDriverPostDataTemplate()
+    {
+        return include self::FILENAME_POST_DATA_DRIVER_TEMPLATE;
     }
 
     private function generateDriverLicenceNumber()
@@ -336,7 +346,7 @@ final class ClientTest extends TestCase
 
     private function getExpectedDataCommon()
     {
-        $configJson = file_get_contents(self::EXPECTED_DATA_COMMON_FILENAME);
+        $configJson = file_get_contents(self::FILENAME_EXPECTED_DATA_COMMON);
 
         return json_decode($configJson, true);
     }
@@ -347,69 +357,21 @@ final class ClientTest extends TestCase
      * @throws HttpClientException
      * @depends testChangeLocale
      */
-    public function testStoreVehicles(Client $client)
+    public function testCreateCar(Client $client)
     {
-        $vehiclePostData = [
-            'status' => 'working',
-            'brand' => 'Alfa Romeo',
-            'model' => '105/115',
-            'color' => 'Белый',
-            'year' => 1996,
-            'number' => '1111112',
-            'callsign' => 'тест',
-            'vin' => '1C3EL46U91N594161',
-            'registration_cert' => '1111111',
-            'booster_count' => 2,
-            'categories' =>
-                [
-                    0 => 'minivan',
-                ],
-            'carrier_permit_owner_id' => NULL,
-            'transmission' => 'unknown',
-            'rental' => false,
-            'chairs' =>
-                [
-                    0 =>
-                        [
-                            'brand' => 'Еду-еду',
-                            'categories' =>
-                                [
-                                    0 => 'Category2',
-                                ],
-                            'isofix' => true,
-                        ],
-                ],
-            'permit' => '777777',
-            'tariffs' =>
-                [
-                    0 => 'Эконом',
-                ],
-            'cargo_loaders' => 1,
-            'carrying_capacity' => 300,
-            'chassis' => '234',
-            'park_id' => '8d40b7c41af544afa0499b9d0bdf2430',
-            'amenities' =>
-                [
-                    0 => 'conditioner',
-                    1 => 'child_seat',
-                    2 => 'delivery',
-                    3 => 'smoking',
-                    4 => 'woman_driver',
-                    5 => 'sticker',
-                    6 => 'charge',
-                ],
-            'cargo_hold_dimensions' =>
-                [
-                    'length' => 150,
-                    'width' => 100,
-                    'height' => 50,
-                ],
-            'log_time' => 350,
-        ];
-
-        $data = $client->storeVehicles($vehiclePostData);
+        $parkId = $this->getTestParkId();
+        $carPostData = $this->getCarPostData();
+        $data = $client->createCar($parkId, $carPostData);
         $this->assertIsArray($data);
         $this->validateJsonResponseData($data);
+    }
+
+    /**
+     * @return array
+     */
+    private function getCarPostData()
+    {
+        return include self::FILENAME_POST_DATA_VEHICLE_TEMPLATE;
     }
 
     /**
