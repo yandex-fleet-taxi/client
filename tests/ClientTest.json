@@ -4,10 +4,5 @@
   "park_id": "2f57c9bb91df469f9cfc1700c821aaf2",
   "driver_id": "b38bfbb16a3f4bd427bedfc571f0b981",
   "car_id": "7a34fe7451cf3e4c007336134cdbbf65",
-  "brand_name": "Alfa Romeo",
-  "curl_options": {
-    "proxy": "host.docker.internal:8888",
-    "verifyhost": 0,
-    "verifypeer": 0
-  }
+  "work_rule_id": "bea83f1024f94dfd980a97a26705f070"
 }
