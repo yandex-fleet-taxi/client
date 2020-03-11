@@ -4,7 +4,6 @@ namespace Likemusic\YandexFleetTaxiClient;
 
 use Http\Client\Common\Plugin\CookiePlugin;
 use Http\Client\Common\PluginClient;
-use Http\Client\Exception as HttpClientException;
 use Http\Client\HttpClient;
 use Http\Message\CookieJar;
 use Likemusic\YandexFleetTaxiClient\Contracts\ClientInterface;
@@ -81,7 +80,7 @@ class Client implements ClientInterface
         $pluginClient = new PluginClient(
             $httpClient,
             [$cookiePlugin],
-            );
+        );
 
         $this->httpPluginClient = $pluginClient;
         $this->dashboardPageParser = $dashboardPageParser;
@@ -90,8 +89,10 @@ class Client implements ClientInterface
     /**
      * @param string $login
      * @param string $password
+     * @throws ClientExceptionInterface
      * @throws Exception
-     * @throws HttpClientException
+     * @throws HttpJsonResponseException
+     * @throws HttpResponseException
      */
     public function login(string $login, string $password)
     {
@@ -112,8 +113,9 @@ class Client implements ClientInterface
 
     /**
      * @return ResponseInterface
-     * @throws Exception
-     * @throws HttpClientException
+     * @throws ClientExceptionInterface
+     * @throws HttpJsonResponseException
+     * @throws HttpResponseException
      */
     private function getPassportPage()
     {
@@ -124,7 +126,7 @@ class Client implements ClientInterface
     /**
      * @param string $url
      * @return ResponseInterface
-     * @throws HttpClientException
+     * @throws ClientExceptionInterface
      * @throws HttpJsonResponseException
      * @throws HttpResponseException
      */
@@ -133,6 +135,12 @@ class Client implements ClientInterface
         $request = $this->createGetRequest($url);
 
         return $this->sendRequestAndValidateResponse($request);
+    }
+
+    private function createGetRequest($uri, $headers = [], StreamInterface $body = null): RequestInterface
+    {
+        $request = $this->createRequest(HttpMethodInterface::GET, $uri);
+        return $this->modifyRequestByHeadersAndBody($request, $headers, $body);
     }
 
     /**
@@ -148,14 +156,26 @@ class Client implements ClientInterface
         );
     }
 
-    /**
-     * @param RequestInterface $request
-     * @return ResponseInterface
-     * @throws HttpClientException
-     */
-    private function sendRequest(RequestInterface $request): ResponseInterface
+    private function modifyRequestByHeadersAndBody(RequestInterface $request, $headers = [], StreamInterface $body = null)
     {
-        return $this->httpPluginClient->sendRequest($request);
+        if ($headers) {
+            $request = $this->addHeaders($request, $headers);
+        }
+
+        if ($body) {
+            $request = $request->withBody($body);
+        }
+
+        return $request;
+    }
+
+    private function addHeaders(RequestInterface $request, array $headers): RequestInterface
+    {
+        foreach ($headers as $key => $value) {
+            $request = $request->withHeader($key, $value);
+        }
+
+        return $request;
     }
 
     /**
@@ -167,10 +187,20 @@ class Client implements ClientInterface
      */
     private function sendRequestAndValidateResponse(RequestInterface $request): ResponseInterface
     {
-        $response = $this->httpPluginClient->sendRequest($request);
+        $response = $this->sendRequest($request);
         $this->validateResponse($response, $request);
 
         return $response;
+    }
+
+    /**
+     * @param RequestInterface $request
+     * @return ResponseInterface
+     * @throws ClientExceptionInterface
+     */
+    private function sendRequest(RequestInterface $request): ResponseInterface
+    {
+        return $this->httpPluginClient->sendRequest($request);
     }
 
     /**
@@ -201,6 +231,11 @@ class Client implements ClientInterface
         }
     }
 
+    private function getResponseBodyText(ResponseInterface $response): string
+    {
+        return $response->getBody()->getContents();
+    }
+
     private function isJsonResponse(ResponseInterface $response)
     {
         $contentType = $this->getResponseContentType($response);
@@ -211,6 +246,11 @@ class Client implements ClientInterface
     private function getResponseContentType(ResponseInterface $response)
     {
         return $response->getHeader('Content-Type')[0];
+    }
+
+    private function jsonDecode($json): array
+    {
+        return json_decode($json, true);
     }
 
     private function getDataFromPassportPageResponse(ResponseInterface $response)
@@ -226,15 +266,15 @@ class Client implements ClientInterface
         return $this->welcomePageParser->getData($body);
     }
 
-
     /**
      * @param string $login
      * @param string $csrfToken
      * @param string $processUuid
      * @param string $retPath
      * @return ResponseInterface
-     * @throws Exception
-     * @throws HttpClientException
+     * @throws ClientExceptionInterface
+     * @throws HttpJsonResponseException
+     * @throws HttpResponseException
      */
     private function submitLogin(string $login, string $csrfToken, string $processUuid, string $retPath)
     {
@@ -253,7 +293,7 @@ class Client implements ClientInterface
      * @param string $uri
      * @param array $postData
      * @return ResponseInterface
-     * @throws HttpClientException
+     * @throws ClientExceptionInterface
      * @throws HttpJsonResponseException
      * @throws HttpResponseException
      */
@@ -275,7 +315,7 @@ class Client implements ClientInterface
      * @param StreamInterface $body
      * @param array $headers
      * @return ResponseInterface
-     * @throws HttpClientException
+     * @throws ClientExceptionInterface
      * @throws HttpJsonResponseException
      * @throws HttpResponseException
      */
@@ -286,62 +326,11 @@ class Client implements ClientInterface
         return $this->sendRequestAndValidateResponse($request);
     }
 
-    /**
-     * @param string $uri
-     * @param StreamInterface $body
-     * @param array $headers
-     * @return ResponseInterface
-     * @throws HttpClientException
-     * @throws HttpJsonResponseException
-     * @throws HttpResponseException
-     */
-    private function sendPutRequestAndValidateResponse(string $uri, StreamInterface $body = null, $headers = [])
-    {
-        $request = $this->createPutRequest($uri, $headers, $body);
-
-        return $this->sendRequestAndValidateResponse($request);
-    }
-
     private function createPostRequest($uri, $headers = [], StreamInterface $body = null): RequestInterface
     {
         $request = $this->createRequest(HttpMethodInterface::POST, $uri);
 
         return $this->modifyRequestByHeadersAndBody($request, $headers, $body);
-    }
-
-    private function modifyRequestByHeadersAndBody(RequestInterface $request, $headers = [], StreamInterface $body = null)
-    {
-        if ($headers) {
-            $request = $this->addHeaders($request, $headers);
-        }
-
-        if ($body) {
-            $request = $request->withBody($body);
-        }
-
-        return $request;
-    }
-
-    private function createPutRequest($uri, $headers = [], StreamInterface $body = null): RequestInterface
-    {
-        $request = $this->createRequest(HttpMethodInterface::PUT, $uri);
-
-        return $this->modifyRequestByHeadersAndBody($request, $headers, $body);
-    }
-
-    private function createGetRequest($uri, $headers = [], StreamInterface $body = null): RequestInterface
-    {
-        $request = $this->createRequest(HttpMethodInterface::GET, $uri);
-        return $this->modifyRequestByHeadersAndBody($request, $headers, $body);
-    }
-
-    private function addHeaders(RequestInterface $request, array $headers): RequestInterface
-    {
-        foreach ($headers as $key => $value) {
-            $request = $request->withHeader($key, $value);
-        }
-
-        return $request;
     }
 
     private function getDataFromLoginPageResponse(ResponseInterface $response)
@@ -363,8 +352,10 @@ class Client implements ClientInterface
      * @param string $trackId
      * @param string $password
      * @return ResponseInterface
+     * @throws ClientExceptionInterface
      * @throws Exception
-     * @throws HttpClientException
+     * @throws HttpJsonResponseException
+     * @throws HttpResponseException
      */
     private function submitPassword(string $csrfToken, string $trackId, string $password)
     {
@@ -399,8 +390,9 @@ class Client implements ClientInterface
 
     /**
      * @return array
-     * @throws Exception
-     * @throws HttpClientException
+     * @throws ClientExceptionInterface
+     * @throws HttpJsonResponseException
+     * @throws HttpResponseException
      */
     public function getDashboardPageData()
     {
@@ -412,8 +404,9 @@ class Client implements ClientInterface
 
     /**
      * @return ResponseInterface
-     * @throws Exception
-     * @throws HttpClientException
+     * @throws ClientExceptionInterface
+     * @throws HttpJsonResponseException
+     * @throws HttpResponseException
      */
     private function getDashboardPage()
     {
@@ -439,11 +432,6 @@ class Client implements ClientInterface
         return $this->getDataFromDashboardPage($body);
     }
 
-    private function getResponseBodyText(ResponseInterface $response): string
-    {
-        return $response->getBody()->getContents();
-    }
-
     private function getDataFromDashboardPage(string $html): array
     {
         return $this->dashboardPageParser->getData($html);
@@ -452,8 +440,9 @@ class Client implements ClientInterface
     /**
      * @param string $languageCode
      * @return array
-     * @throws Exception
-     * @throws HttpClientException
+     * @throws ClientExceptionInterface
+     * @throws HttpJsonResponseException
+     * @throws HttpResponseException
      */
     public function changeLanguage(string $languageCode): array
     {
@@ -465,8 +454,9 @@ class Client implements ClientInterface
     /**
      * @param string $languageCode
      * @return ResponseInterface
-     * @throws Exception
-     * @throws HttpClientException
+     * @throws ClientExceptionInterface
+     * @throws HttpJsonResponseException
+     * @throws HttpResponseException
      */
     private function getDashboardPageWithLanguage(string $languageCode)
     {
@@ -477,18 +467,19 @@ class Client implements ClientInterface
 
     /**
      * @param string $parkId
+     * @param string $text
      * @param int $limit
      * @param int $page
      * @param array $carAmenities
      * @param array $carCategories
      * @param null $status
-     * @param string $text
      * @param int $workRuleId
      * @param string $workStatusId
      * @param array $sort
      * @return array
-     * @throws Exception
-     * @throws HttpClientException
+     * @throws ClientExceptionInterface
+     * @throws HttpJsonResponseException
+     * @throws HttpResponseException
      */
     public function getDrivers(
         string $parkId,
@@ -532,19 +523,12 @@ class Client implements ClientInterface
         return $this->getJsonDecodedBody($response);
     }
 
-    private function getJsonDecodedBody(ResponseInterface $response)
-    {
-        $json = $this->getResponseBodyText($response);
-
-        return $this->jsonDecode($json);
-    }
-
     /**
      * @param string $uri
      * @param array $postData
      * @param array $headers
      * @return ResponseInterface
-     * @throws HttpClientException
+     * @throws ClientExceptionInterface
      * @throws HttpJsonResponseException
      * @throws HttpResponseException
      */
@@ -558,34 +542,20 @@ class Client implements ClientInterface
         return $this->sendPostRequestAndValidateResponse($uri, $stream, $headers);
     }
 
-    /**
-     * @param string $uri
-     * @param array $postData
-     * @param array $headers
-     * @return ResponseInterface
-     * @throws HttpClientException
-     */
-    private function sendPutJsonEncodedRequestAndValidateResponse(string $uri, array $postData = [], $headers = [])
+    private function getJsonDecodedBody(ResponseInterface $response)
     {
-        $headers['Content-Type'] = 'application/json;charset=UTF-8';
+        $json = $this->getResponseBodyText($response);
 
-        $body = json_encode($postData);
-        $stream = $this->streamFactory->createStream($body);
-
-        return $this->sendPutRequestAndValidateResponse($uri, $stream, $headers);
-    }
-
-    private function jsonDecode($json): array
-    {
-        return json_decode($json, true);
+        return $this->jsonDecode($json);
     }
 
     /**
      * @param string $parkId
      * @param array $postData
      * @return string Created driver id
-     * @throws Exception
-     * @throws HttpClientException
+     * @throws ClientExceptionInterface
+     * @throws HttpJsonResponseException
+     * @throws HttpResponseException
      */
     public function createDriver(string $parkId, array $postData): string
     {
@@ -606,8 +576,9 @@ class Client implements ClientInterface
     /**
      * @param string $parkId
      * @return array
-     * @throws Exception
-     * @throws HttpClientException
+     * @throws ClientExceptionInterface
+     * @throws HttpJsonResponseException
+     * @throws HttpResponseException
      */
     public function getVehiclesCardData(string $parkId)
     {
@@ -630,8 +601,9 @@ class Client implements ClientInterface
     /**
      * @param string $brandName
      * @return array
-     * @throws Exception
-     * @throws HttpClientException
+     * @throws ClientExceptionInterface
+     * @throws HttpJsonResponseException
+     * @throws HttpResponseException
      */
     public function getVehiclesCardModels(string $brandName)
     {
@@ -655,7 +627,7 @@ class Client implements ClientInterface
      * @param string $parkId
      * @param array $postData
      * @return array
-     * @throws HttpClientException
+     * @throws ClientExceptionInterface
      * @throws HttpJsonResponseException
      * @throws HttpResponseException
      */
@@ -679,8 +651,9 @@ class Client implements ClientInterface
      * @param string $driverId
      * @param string $carId
      * @return array
-     * @throws Exception
-     * @throws HttpClientException
+     * @throws ClientExceptionInterface
+     * @throws HttpJsonResponseException
+     * @throws HttpResponseException
      */
     public function bindDriverWithCar(string $parkId, string $driverId, string $carId)
     {
@@ -702,9 +675,51 @@ class Client implements ClientInterface
     }
 
     /**
+     * @param string $uri
+     * @param array $postData
+     * @param array $headers
+     * @return ResponseInterface
+     * @throws ClientExceptionInterface
+     * @throws HttpJsonResponseException
+     * @throws HttpResponseException
+     */
+    private function sendPutJsonEncodedRequestAndValidateResponse(string $uri, array $postData = [], $headers = [])
+    {
+        $headers['Content-Type'] = 'application/json;charset=UTF-8';
+
+        $body = json_encode($postData);
+        $stream = $this->streamFactory->createStream($body);
+
+        return $this->sendPutRequestAndValidateResponse($uri, $stream, $headers);
+    }
+
+    /**
+     * @param string $uri
+     * @param StreamInterface $body
+     * @param array $headers
+     * @return ResponseInterface
+     * @throws ClientExceptionInterface
+     * @throws HttpJsonResponseException
+     * @throws HttpResponseException
+     */
+    private function sendPutRequestAndValidateResponse(string $uri, StreamInterface $body = null, $headers = [])
+    {
+        $request = $this->createPutRequest($uri, $headers, $body);
+
+        return $this->sendRequestAndValidateResponse($request);
+    }
+
+    private function createPutRequest($uri, $headers = [], StreamInterface $body = null): RequestInterface
+    {
+        $request = $this->createRequest(HttpMethodInterface::PUT, $uri);
+
+        return $this->modifyRequestByHeadersAndBody($request, $headers, $body);
+    }
+
+    /**
      * @param string $parkId
      * @return array
-     * @throws HttpClientException
+     * @throws ClientExceptionInterface
      * @throws HttpJsonResponseException
      * @throws HttpResponseException
      */
