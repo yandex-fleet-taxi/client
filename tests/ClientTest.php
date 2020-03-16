@@ -82,7 +82,7 @@ final class ClientTest extends TestCase
      */
     private function getTestConfigCommon()
     {
-        $configJson = file_get_contents(self::FILENAME_CONFIG);
+        $configJson = file_get_contents(self::FILENAME_CONFIG_COMMON);
 
         return json_decode($configJson, true);
     }
