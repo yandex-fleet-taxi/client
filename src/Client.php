@@ -1,16 +1,16 @@
 <?php
 
-namespace Likemusic\YandexFleetTaxiClient;
+namespace YandexFleetTaxi\Client;
 
 use Http\Client\Common\Plugin\CookiePlugin;
 use Http\Client\Common\PluginClient;
 use Http\Client\HttpClient;
 use Http\Message\CookieJar;
-use Likemusic\YandexFleetTaxiClient\Contracts\ClientInterface;
-use Likemusic\YandexFleetTaxiClient\Contracts\HttpMethodInterface;
-use Likemusic\YandexFleetTaxiClient\PageParser\FleetTaxiYandexRu\Index as DashboardPageParser;
-use Likemusic\YandexFleetTaxiClient\PageParser\PassportYandexRu\Auth\Welcome as WelcomePageParser;
-use Likemusic\YandexFleetTaxiClient\PageParser\PassportYandexRu\Auth\Welcome\Data as WelcomePageParserData;
+use YandexFleetTaxi\Client\Contracts\ClientInterface;
+use YandexFleetTaxi\Client\Contracts\HttpMethodInterface;
+use YandexFleetTaxi\Client\PageParser\FleetTaxiYandexRu\Index as DashboardPageParser;
+use YandexFleetTaxi\Client\PageParser\PassportYandexRu\Auth\Welcome as WelcomePageParser;
+use YandexFleetTaxi\Client\PageParser\PassportYandexRu\Auth\Welcome\Data as WelcomePageParserData;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;

@@ -1,10 +1,10 @@
 <?php
 
-namespace Likemusic\YandexFleetTaxiClient\PageParser\FleetTaxiYandexRu;
+namespace YandexFleetTaxi\Client\PageParser\FleetTaxiYandexRu;
 
 use DOMXPath;
-use Likemusic\YandexFleetTaxiClient\PageParser\Base as BaseHtmlParser;
-use Likemusic\YandexFleetTaxiClient\PageParser\Base as BasePageParser;
+use YandexFleetTaxi\Client\PageParser\Base as BaseHtmlParser;
+use YandexFleetTaxi\Client\PageParser\Base as BasePageParser;
 
 class Index extends BaseHtmlParser
 {

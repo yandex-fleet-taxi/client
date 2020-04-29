@@ -1,8 +1,8 @@
 <?php
 
-namespace Likemusic\YandexFleetTaxiClient\Tests\PageParser\FleetTaxiYandexRu;
+namespace YandexFleetTaxi\Client\Tests\PageParser\FleetTaxiYandexRu;
 
-use Likemusic\YandexFleetTaxiClient\PageParser\FleetTaxiYandexRu\Index as IndexPageParser;
+use YandexFleetTaxi\Client\PageParser\FleetTaxiYandexRu\Index as IndexPageParser;
 use PHPUnit\Framework\TestCase;
 
 class IndexTest extends TestCase

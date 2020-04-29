@@ -1,11 +1,11 @@
 <?php
 
-namespace Likemusic\YandexFleetTaxiClient\PageParser\PassportYandexRu\Auth;
+namespace YandexFleetTaxi\Client\PageParser\PassportYandexRu\Auth;
 
 use DOMNode;
 use DOMXPath;
-use Likemusic\YandexFleetTaxiClient\PageParser\Base as BaseHtmlParser;
-use Likemusic\YandexFleetTaxiClient\PageParser\PassportYandexRu\Auth\Welcome\Data as WelcomePageParserData;
+use YandexFleetTaxi\Client\PageParser\Base as BaseHtmlParser;
+use YandexFleetTaxi\Client\PageParser\PassportYandexRu\Auth\Welcome\Data as WelcomePageParserData;
 
 class Welcome extends BaseHtmlParser
 {

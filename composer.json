@@ -1,5 +1,5 @@
 {
-  "name": "likemusic/yandex-fleet-taxi-client",
+  "name": "yandex-fleet-taxi/client",
   "description": "Simple client for https://fleet.taxi.yandex.ru/",
   "minimum-stability": "dev",
   "prefer-stable": true,
@@ -22,7 +22,7 @@
     "ext-dom": "*",
     "ext-json": "*",
     "ext-curl": "*",
-    "likemusic/yandex-fleet-taxi-client-contracts": "*",
+    "yandex-fleet-taxi/client-contracts": "*",
     "php-http/message": "^1.8",
     "php-http/curl-client": "^2.0",
     "guzzlehttp/psr7": "^1.6",
@@ -35,7 +35,7 @@
   "repositories": [
     {
       "type": "vcs",
-      "url": "git@github.com:likemusic/yandex-fleet-taxi-client-contracts.git"
+      "url": "git@github.com:yandex-fleet-taxi/client-contracts.git"
     }
   ]
 }

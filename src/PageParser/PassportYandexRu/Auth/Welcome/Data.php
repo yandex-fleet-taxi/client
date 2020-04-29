@@ -1,6 +1,6 @@
 <?php
 
-namespace Likemusic\YandexFleetTaxiClient\PageParser\PassportYandexRu\Auth\Welcome;
+namespace YandexFleetTaxi\Client\PageParser\PassportYandexRu\Auth\Welcome;
 
 class Data
 {

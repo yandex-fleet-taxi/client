@@ -1,6 +1,6 @@
 <?php
 
-namespace Likemusic\YandexFleetTaxiClient\PageParser;
+namespace YandexFleetTaxi\Client\PageParser;
 
 use DOMDocument;
 use DOMElement;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Likemusic\YandexFleetTaxiClient;
+namespace YandexFleetTaxi\Client;
 
 use Throwable;
 

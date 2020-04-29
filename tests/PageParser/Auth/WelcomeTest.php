@@ -1,10 +1,10 @@
 <?php
 
-namespace Likemusic\YandexFleetTaxiClient\Tests\PageParser\Auth;
+namespace YandexFleetTaxi\Client\Tests\PageParser\Auth;
 
 use PHPUnit\Framework\TestCase;
-use Likemusic\YandexFleetTaxiClient\PageParser\PassportYandexRu\Auth\Welcome as WelcomePageParser;
-use Likemusic\YandexFleetTaxiClient\PageParser\PassportYandexRu\Auth\Welcome\Data;
+use YandexFleetTaxi\Client\PageParser\PassportYandexRu\Auth\Welcome as WelcomePageParser;
+use YandexFleetTaxi\Client\PageParser\PassportYandexRu\Auth\Welcome\Data;
 
 class WelcomeTest extends TestCase
 {

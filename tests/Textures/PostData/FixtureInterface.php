@@ -1,6 +1,6 @@
 <?php
 
-namespace Likemusic\YandexFleetTaxiClient\Tests\Textures\PostData;
+namespace YandexFleetTaxi\Client\Tests\Textures\PostData;
 
 interface FixtureInterface
 {

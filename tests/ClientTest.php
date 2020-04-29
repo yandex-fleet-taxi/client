@@ -1,18 +1,18 @@
 <?php
 declare(strict_types=1);
 
-namespace Likemusic\YandexFleetTaxiClient\Tests;
+namespace YandexFleetTaxi\Client\Tests;
 
 use Http\Client\Curl\Client as CurlClient;
 use Http\Client\Exception as HttpClientException;
 use Http\Discovery\Psr17FactoryDiscovery;
-use Likemusic\YandexFleetTaxiClient\Client;
-use Likemusic\YandexFleetTaxiClient\Contracts\LanguageInterface;
-use Likemusic\YandexFleetTaxiClient\Exception as ClientException;
-use Likemusic\YandexFleetTaxiClient\HttpJsonResponseException;
-use Likemusic\YandexFleetTaxiClient\HttpResponseException;
-use Likemusic\YandexFleetTaxiClient\PageParser\FleetTaxiYandexRu\Index as DashboardPageParser;
-use Likemusic\YandexFleetTaxiClient\PageParser\PassportYandexRu\Auth\Welcome as WelcomePageParser;
+use YandexFleetTaxi\Client\Client;
+use YandexFleetTaxi\Client\Contracts\LanguageInterface;
+use YandexFleetTaxi\Client\Exception as ClientException;
+use YandexFleetTaxi\Client\HttpJsonResponseException;
+use YandexFleetTaxi\Client\HttpResponseException;
+use YandexFleetTaxi\Client\PageParser\FleetTaxiYandexRu\Index as DashboardPageParser;
+use YandexFleetTaxi\Client\PageParser\PassportYandexRu\Auth\Welcome as WelcomePageParser;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientExceptionInterface;
 
