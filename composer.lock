@@ -577,12 +577,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/yandex-fleet-taxi/client-contracts.git",
-                "reference": "eb1a5a380a84072d2dac965d68c2467b4cadd023"
+                "reference": "67aefe8cce0093e7e9631112ec582cfd9b8e1fc3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yandex-fleet-taxi/client-contracts/zipball/eb1a5a380a84072d2dac965d68c2467b4cadd023",
-                "reference": "eb1a5a380a84072d2dac965d68c2467b4cadd023",
+                "url": "https://api.github.com/repos/yandex-fleet-taxi/client-contracts/zipball/67aefe8cce0093e7e9631112ec582cfd9b8e1fc3",
+                "reference": "67aefe8cce0093e7e9631112ec582cfd9b8e1fc3",
                 "shasum": ""
             },
             "require": {
@@ -608,7 +608,7 @@
                 "source": "https://github.com/yandex-fleet-taxi/client-contracts/tree/master",
                 "issues": "https://github.com/yandex-fleet-taxi/client-contracts/issues"
             },
-            "time": "2020-04-30T10:52:49+00:00"
+            "time": "2020-04-30T16:32:39+00:00"
         }
     ],
     "packages-dev": [
