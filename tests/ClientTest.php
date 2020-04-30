@@ -36,14 +36,7 @@ final class ClientTest extends TestCase
     {
         $curlOptions = $this->getCurlOptions();
         $httpClient = new CurlClient(null, null, $curlOptions);
-        $welcomePageParser = new WelcomePageParser();
-        $dashboardPageParser = new DashboardPageParser();
-
-        $client = new Client(
-            $welcomePageParser,
-            $dashboardPageParser,
-            $httpClient
-        );
+        $client = new Client($httpClient);
 
         $testConfig = $this->getTestConfig();
         $login = $testConfig['login'];

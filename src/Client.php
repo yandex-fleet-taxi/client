@@ -64,11 +64,11 @@ class Client implements ClientInterface
      * @param DashboardPageParser $dashboardPageParser
      */
     public function __construct(
-        WelcomePageParser $welcomePageParser = null,
-        DashboardPageParser $dashboardPageParser = null,
         HttpClient $httpClient = null,
         RequestFactoryInterface $requestFactory = null,
-        StreamFactoryInterface $streamFactory = null
+        StreamFactoryInterface $streamFactory = null,
+        WelcomePageParser $welcomePageParser = null,
+        DashboardPageParser $dashboardPageParser = null
     )
     {
         $this->welcomePageParser = $welcomePageParser ?: new WelcomePageParser();
