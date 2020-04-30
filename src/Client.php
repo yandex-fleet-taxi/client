@@ -64,22 +64,20 @@ class Client implements ClientInterface
      * @param DashboardPageParser $dashboardPageParser
      */
     public function __construct(
-        WelcomePageParser $welcomePageParser,
-        DashboardPageParser $dashboardPageParser,
+        WelcomePageParser $welcomePageParser = null,
+        DashboardPageParser $dashboardPageParser = null,
         HttpClient $httpClient = null,
         RequestFactoryInterface $requestFactory = null,
         StreamFactoryInterface $streamFactory = null
-        //UriFactory $uriFactory
     )
     {
-        $this->welcomePageParser = $welcomePageParser;
-        $this->dashboardPageParser = $dashboardPageParser;
+        $this->welcomePageParser = $welcomePageParser ?: new WelcomePageParser();
+        $this->dashboardPageParser = $dashboardPageParser ?: new DashboardPageParser();
 
         $this->httpPluginClient = $this->newHttpPluginClient($httpClient);
 
         $this->requestFactory = $requestFactory ?: Psr17FactoryDiscovery::findRequestFactory();
         $this->streamFactory = $streamFactory ?: Psr17FactoryDiscovery::findStreamFactory();
-        //$this->uriFactory = $uriFactory;
     }
 
     private function newHttpPluginClient(HttpClient $httpClient = null): HttpClient

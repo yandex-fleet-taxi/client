@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace YandexFleetTaxi\Client\Tests;
 
 use Http\Client\Curl\Client as CurlClient;
-use Http\Discovery\Psr17FactoryDiscovery;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientExceptionInterface;
 use YandexFleetTaxi\Client\Client;
