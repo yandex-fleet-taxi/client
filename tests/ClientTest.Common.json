@@ -3,6 +3,7 @@
   "curl_options": {
     "proxy": "host.docker.internal:8888",
     "verifyhost": 0,
-    "verifypeer": 0
+    "verifypeer": 0,
+    "followlocation": true
   }
 }

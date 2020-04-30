@@ -855,12 +855,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/yandex-fleet-taxi/client-contracts.git",
-                "reference": "ec4c76e8976278145331f2d835d6d1c01f3b9c6e"
+                "reference": "eb1a5a380a84072d2dac965d68c2467b4cadd023"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yandex-fleet-taxi/client-contracts/zipball/ec4c76e8976278145331f2d835d6d1c01f3b9c6e",
-                "reference": "ec4c76e8976278145331f2d835d6d1c01f3b9c6e",
+                "url": "https://api.github.com/repos/yandex-fleet-taxi/client-contracts/zipball/eb1a5a380a84072d2dac965d68c2467b4cadd023",
+                "reference": "eb1a5a380a84072d2dac965d68c2467b4cadd023",
                 "shasum": ""
             },
             "require": {
@@ -883,10 +883,10 @@
             ],
             "description": "Contracts for client for https://fleet.taxi.yandex.ru/",
             "support": {
-                "source": "https://github.com/yandex-fleet-taxi/client-contracts/tree/driver-scoring",
+                "source": "https://github.com/yandex-fleet-taxi/client-contracts/tree/master",
                 "issues": "https://github.com/yandex-fleet-taxi/client-contracts/issues"
             },
-            "time": "2020-04-29T19:50:05+00:00"
+            "time": "2020-04-30T10:52:49+00:00"
         }
     ],
     "packages-dev": [

@@ -12,8 +12,8 @@
   ],
   "autoload": {
     "psr-4": {
-      "Likemusic\\YandexFleetTaxiClient\\": "src/",
-      "Likemusic\\YandexFleetTaxiClient\\Tests\\": "tests/"
+      "YandexFleetTaxi\\Client\\": "src/",
+      "YandexFleetTaxi\\Client\\Tests\\": "tests/"
     }
   },
   "require": {

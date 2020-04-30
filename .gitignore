@@ -2,5 +2,6 @@
 vendor
 .env
 tests/ClientTest.json
+tests/ClientTest.*.json
 !tests/ClientTest.Expected.Common.json
 tests/ClientTest.Expected.*.json

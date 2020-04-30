@@ -740,4 +740,26 @@ class Client implements ClientInterface
 
         return $this->getJsonDecodedBody($response);
     }
+
+    public function getDriverScoringList(string $parkId, string $license, string $idempotencyToken): array
+    {
+        $uri = 'https://fleet.taxi.yandex.ru/api/v1/driver-scoring/list';
+
+        $headers = [
+            'X-CSRF-TOKEN' => $this->csrfToken,
+            'X-Park-Id' => $parkId,
+            'X-Idempotency-Token' => $idempotencyToken,
+            'Accept-Language' => 'ru,en-US;q=0.9,en;q=0.8,be;q=0.7,pl;q=0.6,uk;q=0.5',
+        ];
+
+        $postData = [
+            'license' => $license,
+        ];
+
+        $response = $this->sendPostJsonEncodedRequestAndValidateResponse($uri, $postData, $headers);
+
+        $data = $this->getJsonDecodedBody($response);
+
+        return $data['report'];
+    }
 }

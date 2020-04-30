@@ -4,8 +4,9 @@ declare(strict_types=1);
 namespace YandexFleetTaxi\Client\Tests;
 
 use Http\Client\Curl\Client as CurlClient;
-use Http\Client\Exception as HttpClientException;
 use Http\Discovery\Psr17FactoryDiscovery;
+use PHPUnit\Framework\TestCase;
+use Psr\Http\Client\ClientExceptionInterface;
 use YandexFleetTaxi\Client\Client;
 use YandexFleetTaxi\Client\Contracts\LanguageInterface;
 use YandexFleetTaxi\Client\Exception as ClientException;
@@ -13,8 +14,6 @@ use YandexFleetTaxi\Client\HttpJsonResponseException;
 use YandexFleetTaxi\Client\HttpResponseException;
 use YandexFleetTaxi\Client\PageParser\FleetTaxiYandexRu\Index as DashboardPageParser;
 use YandexFleetTaxi\Client\PageParser\PassportYandexRu\Auth\Welcome as WelcomePageParser;
-use PHPUnit\Framework\TestCase;
-use Psr\Http\Client\ClientExceptionInterface;
 
 final class ClientTest extends TestCase
 {
@@ -74,6 +73,7 @@ final class ClientTest extends TestCase
             CURLOPT_PROXY => $configCurlOptions['proxy'],
             CURLOPT_SSL_VERIFYHOST => $configCurlOptions['verifyhost'],
             CURLOPT_SSL_VERIFYPEER => $configCurlOptions['verifypeer'],
+            CURLOPT_FOLLOWLOCATION => $configCurlOptions['followlocation'],
         ];
     }
 
@@ -437,9 +437,9 @@ final class ClientTest extends TestCase
 
     /**
      * @param Client $client
-     * @throws ClientException
-     * @throws HttpClientException
      * @throws ClientExceptionInterface
+     * @throws HttpJsonResponseException
+     * @throws HttpResponseException
      * @depends testChangeLocale
      * @group get
      */
@@ -459,5 +459,36 @@ final class ClientTest extends TestCase
         $expectedData = $this->getExpectedDataPark();
 
         return $expectedData['drivers_card_data'];
+    }
+
+    /**
+     * @param Client $client
+     * @depends testGetDashboardPageData
+     * @group post
+     */
+    public function testGetDriverScoringList(Client $client)
+    {
+        $parkId = $this->getTestParkId();
+        $license = $this->getTestLicense();
+        $idempotencyToken = '10ec497e-9b6e-49b8-a209-df3032279b6a';
+
+        $data = $client->getDriverScoringList($parkId, $license, $idempotencyToken);
+        $this->assertIsArray($data);
+        $expectedDriversCardData = $this->getExpectedDriverScoringList();
+        $this->assertEquals($expectedDriversCardData, $data);
+    }
+
+    private function getTestLicense(): string
+    {
+        $testConfig = $this->getTestConfig();
+
+        return $testConfig['license'];
+    }
+
+    private function getExpectedDriverScoringList(): array
+    {
+        $expectedData = $this->getExpectedDataPark();
+
+        return $expectedData['driver_scoring_list'];
     }
 }

@@ -2,5 +2,6 @@
   "login": "login",
   "password": "password",
   "park_id": "0123456789abcdef0123456789abcdef",
-  "work_rule_id": "abcdef0123456789abcdef0123456789"
+  "work_rule_id": "abcdef0123456789abcdef0123456789",
+  "license": "SA000506461"
 }
