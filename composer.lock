@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "33418b6fb046da688987678b4d842d30",
+    "content-hash": "ce50363b980a035e04622cc4a7e0e6aa",
     "packages": [
         {
             "name": "clue/stream-filter",
@@ -57,127 +57,6 @@
                 "stream_filter_register"
             ],
             "time": "2019-04-09T12:31:48+00:00"
-        },
-        {
-            "name": "guzzlehttp/psr7",
-            "version": "1.6.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/guzzle/psr7.git",
-                "reference": "239400de7a173fe9901b9ac7c06497751f00727a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/239400de7a173fe9901b9ac7c06497751f00727a",
-                "reference": "239400de7a173fe9901b9ac7c06497751f00727a",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.4.0",
-                "psr/http-message": "~1.0",
-                "ralouphie/getallheaders": "^2.0.5 || ^3.0.0"
-            },
-            "provide": {
-                "psr/http-message-implementation": "1.0"
-            },
-            "require-dev": {
-                "ext-zlib": "*",
-                "phpunit/phpunit": "~4.8.36 || ^5.7.27 || ^6.5.8"
-            },
-            "suggest": {
-                "zendframework/zend-httphandlerrunner": "Emit PSR-7 responses"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.6-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "GuzzleHttp\\Psr7\\": "src/"
-                },
-                "files": [
-                    "src/functions_include.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Michael Dowling",
-                    "email": "mtdowling@gmail.com",
-                    "homepage": "https://github.com/mtdowling"
-                },
-                {
-                    "name": "Tobias Schultze",
-                    "homepage": "https://github.com/Tobion"
-                }
-            ],
-            "description": "PSR-7 message implementation that also provides common utility methods",
-            "keywords": [
-                "http",
-                "message",
-                "psr-7",
-                "request",
-                "response",
-                "stream",
-                "uri",
-                "url"
-            ],
-            "time": "2019-07-01T23:21:34+00:00"
-        },
-        {
-            "name": "http-interop/http-factory-guzzle",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/http-interop/http-factory-guzzle.git",
-                "reference": "34861658efb9899a6618cef03de46e2a52c80fc0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/http-interop/http-factory-guzzle/zipball/34861658efb9899a6618cef03de46e2a52c80fc0",
-                "reference": "34861658efb9899a6618cef03de46e2a52c80fc0",
-                "shasum": ""
-            },
-            "require": {
-                "guzzlehttp/psr7": "^1.4.2",
-                "psr/http-factory": "^1.0"
-            },
-            "provide": {
-                "psr/http-factory-implementation": "^1.0"
-            },
-            "require-dev": {
-                "http-interop/http-factory-tests": "^0.5",
-                "phpunit/phpunit": "^6.5"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Http\\Factory\\Guzzle\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "PHP-FIG",
-                    "homepage": "http://www.php-fig.org/"
-                }
-            ],
-            "description": "An HTTP Factory using Guzzle PSR7",
-            "keywords": [
-                "factory",
-                "http",
-                "psr-17",
-                "psr-7"
-            ],
-            "time": "2018-07-31T19:32:56+00:00"
         },
         {
             "name": "php-http/client-common",
@@ -244,71 +123,6 @@
                 "httplug"
             ],
             "time": "2019-11-18T08:58:18+00:00"
-        },
-        {
-            "name": "php-http/curl-client",
-            "version": "2.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-http/curl-client.git",
-                "reference": "9e79355af46d72e10da50be20b66f74b26143441"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-http/curl-client/zipball/9e79355af46d72e10da50be20b66f74b26143441",
-                "reference": "9e79355af46d72e10da50be20b66f74b26143441",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "php": "^7.1",
-                "php-http/discovery": "^1.6",
-                "php-http/httplug": "^2.0",
-                "php-http/message": "^1.2",
-                "psr/http-client": "^1.0",
-                "psr/http-factory": "^1.0",
-                "symfony/options-resolver": "^3.4 || ^4.0 || ^5.0"
-            },
-            "provide": {
-                "php-http/async-client-implementation": "1.0",
-                "php-http/client-implementation": "1.0",
-                "psr/http-client-implementation": "1.0"
-            },
-            "require-dev": {
-                "guzzlehttp/psr7": "^1.0",
-                "php-http/client-integration-tests": "^2.0",
-                "phpunit/phpunit": "^7.5",
-                "zendframework/zend-diactoros": "^2.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Http\\Client\\Curl\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Михаил Красильников",
-                    "email": "m.krasilnikov@yandex.ru"
-                }
-            ],
-            "description": "PSR-18 and HTTPlug Async client with cURL",
-            "homepage": "http://php-http.org",
-            "keywords": [
-                "curl",
-                "http",
-                "psr-18"
-            ],
-            "time": "2019-12-27T11:02:07+00:00"
         },
         {
             "name": "php-http/discovery",
@@ -654,58 +468,6 @@
             "time": "2018-10-30T23:29:13+00:00"
         },
         {
-            "name": "psr/http-factory",
-            "version": "1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-fig/http-factory.git",
-                "reference": "12ac7fcd07e5b077433f5f2bee95b3a771bf61be"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/http-factory/zipball/12ac7fcd07e5b077433f5f2bee95b3a771bf61be",
-                "reference": "12ac7fcd07e5b077433f5f2bee95b3a771bf61be",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.0.0",
-                "psr/http-message": "^1.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Psr\\Http\\Message\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "PHP-FIG",
-                    "homepage": "http://www.php-fig.org/"
-                }
-            ],
-            "description": "Common interfaces for PSR-7 HTTP message factories",
-            "keywords": [
-                "factory",
-                "http",
-                "message",
-                "psr",
-                "psr-17",
-                "psr-7",
-                "request",
-                "response"
-            ],
-            "time": "2019-04-30T12:38:16+00:00"
-        },
-        {
             "name": "psr/http-message",
             "version": "1.0.1",
             "source": {
@@ -754,46 +516,6 @@
                 "response"
             ],
             "time": "2016-08-06T14:39:51+00:00"
-        },
-        {
-            "name": "ralouphie/getallheaders",
-            "version": "3.0.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ralouphie/getallheaders.git",
-                "reference": "120b605dfeb996808c31b6477290a714d356e822"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ralouphie/getallheaders/zipball/120b605dfeb996808c31b6477290a714d356e822",
-                "reference": "120b605dfeb996808c31b6477290a714d356e822",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.6"
-            },
-            "require-dev": {
-                "php-coveralls/php-coveralls": "^2.1",
-                "phpunit/phpunit": "^5 || ^6.5"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "src/getallheaders.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Ralph Khattar",
-                    "email": "ralph.khattar@gmail.com"
-                }
-            ],
-            "description": "A polyfill for getallheaders.",
-            "time": "2019-03-08T08:55:37+00:00"
         },
         {
             "name": "symfony/options-resolver",
@@ -947,6 +669,127 @@
             "time": "2019-10-21T16:45:58+00:00"
         },
         {
+            "name": "guzzlehttp/psr7",
+            "version": "1.6.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/guzzle/psr7.git",
+                "reference": "239400de7a173fe9901b9ac7c06497751f00727a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/239400de7a173fe9901b9ac7c06497751f00727a",
+                "reference": "239400de7a173fe9901b9ac7c06497751f00727a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0",
+                "psr/http-message": "~1.0",
+                "ralouphie/getallheaders": "^2.0.5 || ^3.0.0"
+            },
+            "provide": {
+                "psr/http-message-implementation": "1.0"
+            },
+            "require-dev": {
+                "ext-zlib": "*",
+                "phpunit/phpunit": "~4.8.36 || ^5.7.27 || ^6.5.8"
+            },
+            "suggest": {
+                "zendframework/zend-httphandlerrunner": "Emit PSR-7 responses"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.6-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "GuzzleHttp\\Psr7\\": "src/"
+                },
+                "files": [
+                    "src/functions_include.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Dowling",
+                    "email": "mtdowling@gmail.com",
+                    "homepage": "https://github.com/mtdowling"
+                },
+                {
+                    "name": "Tobias Schultze",
+                    "homepage": "https://github.com/Tobion"
+                }
+            ],
+            "description": "PSR-7 message implementation that also provides common utility methods",
+            "keywords": [
+                "http",
+                "message",
+                "psr-7",
+                "request",
+                "response",
+                "stream",
+                "uri",
+                "url"
+            ],
+            "time": "2019-07-01T23:21:34+00:00"
+        },
+        {
+            "name": "http-interop/http-factory-guzzle",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/http-interop/http-factory-guzzle.git",
+                "reference": "34861658efb9899a6618cef03de46e2a52c80fc0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/http-interop/http-factory-guzzle/zipball/34861658efb9899a6618cef03de46e2a52c80fc0",
+                "reference": "34861658efb9899a6618cef03de46e2a52c80fc0",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/psr7": "^1.4.2",
+                "psr/http-factory": "^1.0"
+            },
+            "provide": {
+                "psr/http-factory-implementation": "^1.0"
+            },
+            "require-dev": {
+                "http-interop/http-factory-tests": "^0.5",
+                "phpunit/phpunit": "^6.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Http\\Factory\\Guzzle\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "An HTTP Factory using Guzzle PSR7",
+            "keywords": [
+                "factory",
+                "http",
+                "psr-17",
+                "psr-7"
+            ],
+            "time": "2018-07-31T19:32:56+00:00"
+        },
+        {
             "name": "myclabs/deep-copy",
             "version": "1.9.5",
             "source": {
@@ -1095,6 +938,71 @@
             ],
             "description": "Library for handling version information and constraints",
             "time": "2018-07-08T19:19:57+00:00"
+        },
+        {
+            "name": "php-http/curl-client",
+            "version": "2.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-http/curl-client.git",
+                "reference": "9e79355af46d72e10da50be20b66f74b26143441"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-http/curl-client/zipball/9e79355af46d72e10da50be20b66f74b26143441",
+                "reference": "9e79355af46d72e10da50be20b66f74b26143441",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": "^7.1",
+                "php-http/discovery": "^1.6",
+                "php-http/httplug": "^2.0",
+                "php-http/message": "^1.2",
+                "psr/http-client": "^1.0",
+                "psr/http-factory": "^1.0",
+                "symfony/options-resolver": "^3.4 || ^4.0 || ^5.0"
+            },
+            "provide": {
+                "php-http/async-client-implementation": "1.0",
+                "php-http/client-implementation": "1.0",
+                "psr/http-client-implementation": "1.0"
+            },
+            "require-dev": {
+                "guzzlehttp/psr7": "^1.0",
+                "php-http/client-integration-tests": "^2.0",
+                "phpunit/phpunit": "^7.5",
+                "zendframework/zend-diactoros": "^2.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Http\\Client\\Curl\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Михаил Красильников",
+                    "email": "m.krasilnikov@yandex.ru"
+                }
+            ],
+            "description": "PSR-18 and HTTPlug Async client with cURL",
+            "homepage": "http://php-http.org",
+            "keywords": [
+                "curl",
+                "http",
+                "psr-18"
+            ],
+            "time": "2019-12-27T11:02:07+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -1641,6 +1549,98 @@
                 "xunit"
             ],
             "time": "2020-04-23T04:39:42+00:00"
+        },
+        {
+            "name": "psr/http-factory",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/http-factory.git",
+                "reference": "12ac7fcd07e5b077433f5f2bee95b3a771bf61be"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/http-factory/zipball/12ac7fcd07e5b077433f5f2bee95b3a771bf61be",
+                "reference": "12ac7fcd07e5b077433f5f2bee95b3a771bf61be",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0.0",
+                "psr/http-message": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Http\\Message\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interfaces for PSR-7 HTTP message factories",
+            "keywords": [
+                "factory",
+                "http",
+                "message",
+                "psr",
+                "psr-17",
+                "psr-7",
+                "request",
+                "response"
+            ],
+            "time": "2019-04-30T12:38:16+00:00"
+        },
+        {
+            "name": "ralouphie/getallheaders",
+            "version": "3.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ralouphie/getallheaders.git",
+                "reference": "120b605dfeb996808c31b6477290a714d356e822"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ralouphie/getallheaders/zipball/120b605dfeb996808c31b6477290a714d356e822",
+                "reference": "120b605dfeb996808c31b6477290a714d356e822",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6"
+            },
+            "require-dev": {
+                "php-coveralls/php-coveralls": "^2.1",
+                "phpunit/phpunit": "^5 || ^6.5"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/getallheaders.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ralph Khattar",
+                    "email": "ralph.khattar@gmail.com"
+                }
+            ],
+            "description": "A polyfill for getallheaders.",
+            "time": "2019-03-08T08:55:37+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",

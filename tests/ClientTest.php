@@ -36,19 +36,14 @@ final class ClientTest extends TestCase
     public function testLogin()
     {
         $curlOptions = $this->getCurlOptions();
-
         $httpClient = new CurlClient(null, null, $curlOptions);
-        $requestFactory = Psr17FactoryDiscovery::findRequestFactory();
         $welcomePageParser = new WelcomePageParser();
-        $streamFactory = Psr17FactoryDiscovery::findStreamFactory();
         $dashboardPageParser = new DashboardPageParser();
 
         $client = new Client(
-            $httpClient,
-            $requestFactory,
-            $streamFactory,
             $welcomePageParser,
-            $dashboardPageParser
+            $dashboardPageParser,
+            $httpClient
         );
 
         $testConfig = $this->getTestConfig();

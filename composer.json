@@ -23,13 +23,13 @@
     "ext-json": "*",
     "ext-curl": "*",
     "yandex-fleet-taxi/client-contracts": "*",
-    "php-http/message": "^1.8",
+    "php-http/client-common": "^2.0",
+    "php-http/discovery": "^1.7"
+  },
+  "require-dev": {
     "php-http/curl-client": "^2.0",
     "guzzlehttp/psr7": "^1.6",
     "http-interop/http-factory-guzzle": "^1.0",
-    "php-http/client-common": "^2.0"
-  },
-  "require-dev": {
     "phpunit/phpunit": "^8"
   },
   "repositories": [

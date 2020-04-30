@@ -5,18 +5,20 @@ namespace YandexFleetTaxi\Client;
 use Http\Client\Common\Plugin\CookiePlugin;
 use Http\Client\Common\PluginClient;
 use Http\Client\HttpClient;
+use Http\Discovery\HttpClientDiscovery;
+use Http\Discovery\Psr17FactoryDiscovery;
 use Http\Message\CookieJar;
-use YandexFleetTaxi\Client\Contracts\ClientInterface;
-use YandexFleetTaxi\Client\Contracts\HttpMethodInterface;
-use YandexFleetTaxi\Client\PageParser\FleetTaxiYandexRu\Index as DashboardPageParser;
-use YandexFleetTaxi\Client\PageParser\PassportYandexRu\Auth\Welcome as WelcomePageParser;
-use YandexFleetTaxi\Client\PageParser\PassportYandexRu\Auth\Welcome\Data as WelcomePageParserData;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
+use YandexFleetTaxi\Client\Contracts\ClientInterface;
+use YandexFleetTaxi\Client\Contracts\HttpMethodInterface;
+use YandexFleetTaxi\Client\PageParser\FleetTaxiYandexRu\Index as DashboardPageParser;
+use YandexFleetTaxi\Client\PageParser\PassportYandexRu\Auth\Welcome as WelcomePageParser;
+use YandexFleetTaxi\Client\PageParser\PassportYandexRu\Auth\Welcome\Data as WelcomePageParserData;
 
 class Client implements ClientInterface
 {
@@ -62,28 +64,36 @@ class Client implements ClientInterface
      * @param DashboardPageParser $dashboardPageParser
      */
     public function __construct(
-        HttpClient $httpClient,
-        RequestFactoryInterface $requestFactory,
-        StreamFactoryInterface $streamFactory,
         WelcomePageParser $welcomePageParser,
-        DashboardPageParser $dashboardPageParser
+        DashboardPageParser $dashboardPageParser,
+        HttpClient $httpClient = null,
+        RequestFactoryInterface $requestFactory = null,
+        StreamFactoryInterface $streamFactory = null
         //UriFactory $uriFactory
     )
     {
-        $this->requestFactory = $requestFactory;
-        $this->streamFactory = $streamFactory;
-        //$this->uriFactory = $uriFactory;
         $this->welcomePageParser = $welcomePageParser;
+        $this->dashboardPageParser = $dashboardPageParser;
+
+        $this->httpPluginClient = $this->newHttpPluginClient($httpClient);
+
+        $this->requestFactory = $requestFactory ?: Psr17FactoryDiscovery::findRequestFactory();
+        $this->streamFactory = $streamFactory ?: Psr17FactoryDiscovery::findStreamFactory();
+        //$this->uriFactory = $uriFactory;
+    }
+
+    private function newHttpPluginClient(HttpClient $httpClient = null): HttpClient
+    {
+        if (!$httpClient) {
+            $httpClient = HttpClientDiscovery::find();
+        }
 
         $cookiePlugin = new CookiePlugin(new CookieJar());
 
-        $pluginClient = new PluginClient(
+        return new PluginClient(
             $httpClient,
             [$cookiePlugin],
         );
-
-        $this->httpPluginClient = $pluginClient;
-        $this->dashboardPageParser = $dashboardPageParser;
     }
 
     /**
